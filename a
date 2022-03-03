@@ -1,0 +1,1429 @@
+<body>
+    <script src="https://static.leetcode-cn.com/cn-legacy-assets/bootstrap/dist/js/bootstrap.min.js?v=3.3.7"></script>
+    <script src="https://static.leetcode-cn.com/cn-legacy-assets/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script src="https://static.leetcode-cn.com/cn-legacy-assets/CACHE/js/output.9db0bff13b6e.js"></script>
+
+    <script src="https://static.leetcode-cn.com/cn-assets/webpack_bundles/runtime.88b558361.js" type="text/javascript"></script>
+    <script src="https://static.leetcode-cn.com/cn-assets/webpack_bundles/common/global.cc1497803.js" type="text/javascript"></script>
+    <script src="https://static.leetcode-cn.com/cn-assets/webpack_bundles/common/styles/index.1271cd71f.js" type="text/javascript"></script>
+    <script src="https://static.leetcode-cn.com/cn-assets/webpack_bundles/vendor-libs.aaa1b289f.js" type="text/javascript"></script>
+    <script src="https://static.leetcode-cn.com/cn-assets/webpack_bundles/common-libs.1d356ed55.js" type="text/javascript"></script>
+    <script src="https://static.leetcode-cn.com/cn-assets/webpack_bundles/new-libs.909e8539a.js" type="text/javascript"></script>
+
+    
+      <script src="https://static.leetcode-cn.com/cn-assets/webpack_bundles/locales/zh-Hans/index.06f71e37a.js" type="text/javascript"></script>
+    
+    
+    
+  <div class="content-wrapper">
+
+    
+    <style>
+    #noj-navbar {
+      z-index: 1;
+      position: relative;
+    }
+    #noj-navbar-placeholder {
+      height: 64px;
+    }
+    .fav-list .list-group-item {
+      z-index: 1;
+    }
+    .ant-dropdown-menu-item > [class*="UserMenuLink"],
+    .ant-dropdown-menu-submenu-title > [class*="UserMenuLink"] {
+      margin: 0 -12px;
+    }
+    .article-reader-app {
+      background: #fafafa;
+    }
+    .playground-base>.row>div:not(.toolbar-bot-base) {
+      padding-top: 55px;
+    }
+    .playground-base.full-screen .row > div {
+      padding-top: 10px;
+    }
+    .playground-base .full-screen-btn {
+      top: 55px;
+    }
+    .site-footer .links a {
+      display: inline-block;
+    }
+    </style>
+    <div data-head-sha="81afb2e6" data-head-version="1.153.16" id="noj-navbar"></div>
+    <div id="noj-navbar-placeholder"></div>
+    <script>
+      var navbar = document.querySelector('#noj-navbar')
+      var placeholder = document.querySelector('#noj-navbar-placeholder')
+      var noNeedExtraPaddingPaths = ['/articles', '/contest', '/explore', '/store', '/playground', '/points']
+      var noNeedExtraPadding = noNeedExtraPaddingPaths.some(function(path) {
+        return location.pathname.startsWith(path)
+      })
+
+      function isMobile() {
+        return !!navigator.userAgent.match(/Android|iPod|iPhone/i);
+      }
+
+      // add .pc-body to control min-width on pc
+      if(!isMobile()){
+        document.body.className += ' pc-body';
+      }
+
+      if (noNeedExtraPadding) {
+        placeholder.style.height = '44px'
+      }
+      var observer = new MutationObserver(function(list, obs) {
+        placeholder.parentNode.removeChild(placeholder)
+        if (isMobile()) {
+          if (!noNeedExtraPadding) {
+            navbar.style.marginBottom = '65px'
+          } else {
+            navbar.style.marginBottom = '45px'
+          }
+          navbar.style.position = 'relative'
+        } else {
+          if (!noNeedExtraPadding) {
+            navbar.style.marginBottom = '20px'
+          }
+        }
+        obs.disconnect()
+      })
+
+      observer.observe(navbar, {
+        childList: true
+      })
+    </script>
+    <div id="base_content">
+       
+  <div class="container">
+    
+    <div class="row">
+      <div class="col-md-12">
+        <div class="question-title clearfix">
+          
+          <h3>2185. <span>统计包含给定前缀的字符串</span></h3>
+          
+          <div class="pull-right top-buttons">
+            <label class="lang-switcher">
+              <input type="checkbox"/>
+              显示英文描述
+            </label>
+            <div class="btn-group right-pad">
+              <a class="btn btn-default" href="/contest/weekly-contest-282/problems/counting-words-with-a-given-prefix/submissions/">我的提交</a>
+              
+                <a class="btn btn-success" href="/contest/weekly-contest-282/">返回竞赛</a>
+              
+            </div>
+          </div>
+        </div>
+        <div class="row col-md-12">
+
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="contest-question-info pull-right">
+              <ul class="list-group">
+                
+                  <li class="list-group-item">
+                    <strong>
+                      通过的用户数
+                    </strong>
+                    <span class="pull-right">5759</span>
+                  </li>
+                  <li class="list-group-item">
+                    <strong>
+                      尝试过的用户数
+                    </strong>
+                    <span class="pull-right">5844</span>
+                  </li>
+                
+                <li class="list-group-item">
+                  <strong>用户总通过次数</strong>
+                  <span class="pull-right">5845</span>
+                </li>
+                <li class="list-group-item">
+                  <strong>用户总提交次数</strong>
+                  <span class="pull-right">7350</span>
+                </li>
+                <li class="list-group-item">
+                  <strong>题目难度</strong>
+                  <span class="pull-right label label-Easy round">Easy</span>
+                </li>
+              </ul>
+            </div>
+            <div class="question-content default-content">
+              <p>给你一个字符串数组 <code>words</code> 和一个字符串 <code>pref</code> 。</p>
+
+<p>返回 <code>words</code><em> </em>中以 <code>pref</code> 作为 <strong>前缀</strong> 的字符串的数目。</p>
+
+<p>字符串 <code>s</code> 的 <strong>前缀</strong> 就是  <code>s</code> 的任一前导连续字符串。</p>
+
+<p> </p>
+
+<p><strong>示例 1：</strong></p>
+
+<pre><strong>输入：</strong>words = ["pay","<em><strong>at</strong></em>tention","practice","<em><strong>at</strong></em>tend"], <code>pref </code>= "at"
+<strong>输出：</strong>2
+<strong>解释：</strong>以 "at" 作为前缀的字符串有两个，分别是："<em><strong>at</strong></em>tention" 和 "<em><strong>at</strong></em>tend" 。
+</pre>
+
+<p><strong>示例 2：</strong></p>
+
+<pre><strong>输入：</strong>words = ["leetcode","win","loops","success"], <code>pref </code>= "code"
+<strong>输出：</strong>0
+<strong>解释：</strong>不存在以 "code" 作为前缀的字符串。
+</pre>
+
+<p> </p>
+
+<p><strong>提示：</strong></p>
+
+<ul>
+	<li><code>1 &lt;= words.length &lt;= 100</code></li>
+	<li><code>1 &lt;= words[i].length, pref.length &lt;= 100</code></li>
+	<li><code>words[i]</code> 和 <code>pref</code> 由小写英文字母组成</li>
+</ul>
+
+            </div>
+            <div class="question-content source-content" style="display: none">
+              <p>You are given an array of strings <code>words</code> and a string <code>pref</code>.</p>
+
+<p>Return <em>the number of strings in </em><code>words</code><em> that contain </em><code>pref</code><em> as a <strong>prefix</strong></em>.</p>
+
+<p>A <strong>prefix</strong> of a string <code>s</code> is any leading contiguous substring of <code>s</code>.</p>
+
+<p> </p>
+<p><strong>Example 1:</strong></p>
+
+<pre><strong>Input:</strong> words = ["pay","<strong><u>at</u></strong>tention","practice","<u><strong>at</strong></u>tend"], <code>pref </code>= "at"
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The 2 strings that contain "at" as a prefix are: "<u><strong>at</strong></u>tention" and "<u><strong>at</strong></u>tend".
+</pre>
+
+<p><strong>Example 2:</strong></p>
+
+<pre><strong>Input:</strong> words = ["leetcode","win","loops","success"], <code>pref </code>= "code"
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There are no strings that contain "code" as a prefix.
+</pre>
+
+<p> </p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= words.length &lt;= 100</code></li>
+	<li><code>1 &lt;= words[i].length, pref.length &lt;= 100</code></li>
+	<li><code>words[i]</code> and <code>pref</code> consist of lowercase English letters.</li>
+</ul>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="editor-container">
+    <div id="submission-form-app"></div>
+  </div>
+
+    </div>
+
+  </div>
+
+  
+  <footer class="site-footer chinese" id="lc-footer">
+    <div class="container">
+      <hr/>
+      <div class="row">
+        
+        <div class="col-sm-5 copyright">
+          <a href="https://lingkou.com" style="color:#373737" target="_blank">
+            <span>© 2022 领扣网络（上海）有限公司版权所有</span>
+          </a>
+        </div>
+        
+        <div class="text-right col-sm-7">
+          <div class="links">
+            <a href="https://lingkou.com/?utm_source=leetcode-cn" target="_blank">企业服务</a>
+             | 
+            <a href="/brand/">品牌介绍</a>
+             | 
+            <a href="/about/">关于我们</a>
+             | 
+            <a href="https://leetcode-cn.com/support/new-request/">问题反馈</a>
+             | 
+            <a href="/support/">帮助中心</a>
+             | 
+            
+              <span class="hidden-xs hidden-sm" id="Join_LeetCode">
+                <a href="/jobs/lingkou/">加入我们</a>
+                 | 
+              </span>
+            
+            <a href="/terms-c/">使用条例</a>
+             | 
+            <a href="/privacy/">隐私政策</a>
+            
+              <span class="region-base">
+                
+                  <span class="hidden-xs space">   </span>
+                  <a class="choose-region hidden-xs" href="/region/">
+                    <img height="14" src="https://static.leetcode-cn.com/cn-legacy-assets/images/region/cn.svg"/>
+                    <span>中国</span>
+                  </a>
+                
+              </span>
+            
+          </div>
+        </div>
+      </div>
+      
+        <div class="row chinese-license">
+          <div class="col-sm-6 text-right col-sm-push-6 gongan-beian">
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31011502007040" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;" target="_blank">
+              <img class="beian" src="https://static.leetcode-cn.com/cn-legacy-assets/images/beian.png" style="float:left;"/>
+              <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px;">
+                沪公网安备 31011502007040号
+              </p>
+            </a>
+          </div>
+
+          <div class="col-sm-6 col-sm-pull-6 icp-beian">
+            <div class="ICP license">
+              <a href="http://beian.miit.gov.cn" target="_blank">
+                <span>沪ICP备17051546号</span>
+              </a>
+              <span class="region-base-xs"> 
+                <a class="choose-region" href="/region/">
+                  <img height="10" src="https://static.leetcode-cn.com/cn-legacy-assets/images/region/cn.svg"/> <span>中国</span>
+                </a>
+              </span>
+            </div>
+            <!--
+            <div class="sgs license">
+              <a href="http://sh.gsxt.gov.cn/notice/notice/view?uuid=Db4Dh06YKFTDP4..0w0NzyaG19T8LNcP&tabPanel=01" target="_blank">
+                <img src="https://static.leetcode-cn.com/cn-legacy-assets/images/sgs.png" alt="上海工商" height="14" />上海工商
+              </a>
+            </div>
+            -->
+          </div>
+        </div>
+      
+    </div>
+  </footer>
+
+  <div class="modal fade simple-modal" id="supportModal" role="dialog">
+    <div class="modal-center">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button aria-hidden="true" class="close" data-dismiss="modal" type="button">×</button>
+            <span class="text-lg text-300"> 有什么可以帮到您？</span>
+          </div>
+
+          <div class="modal-body">
+            <div class="row text-center">
+              <div class="col-sm-4">
+                <a class="support-module btn btn-default" href="mailto:billing@leetcode.com?subject=Billing%20Issue&amp;body=Name:%0D%0A%0D%0AUsername:%0D%0A%0D%0AMessage:%0D%0A%0D%0A" target="_blank">
+                  <i aria-hidden="true" class="fa fa-credit-card text-xl"></i>
+                  <br/><span class="text">账号、账单问题</span>
+                </a>
+              </div>
+              <div class="col-sm-4">
+                <a class="support-module btn btn-default" href="mailto:support@leetcode.com?subject=General%20Support&amp;body=Name:%0D%0A%0D%0AUsername:%0D%0A%0D%0AMessage:%0D%0A%0D%0A" target="_blank">
+                  <i aria-hidden="true" class="fa fa-life-ring text-xl"></i>
+                  <br/><span class="text">一般支持</span>
+                </a>
+              </div>
+              <div class="col-sm-4">
+                <a class="support-module btn btn-default" href="mailto:feedback@leetcode.com?subject=Other%20Inquiries&amp;body=Name:%0D%0A%0D%0AUsername:%0D%0A%0D%0AMessage:%0D%0A%0D%0A" target="_blank">
+                  <i aria-hidden="true" class="fa fa-question-circle text-xl"></i>
+                  <br/><span class="text">其他咨询</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <script src="https://static.leetcode-cn.com/cn-mono-assets/production/head/runtime~main.2d1ff45e.js" type="text/javascript"></script>
+<script src="https://static.leetcode-cn.com/cn-mono-assets/production/head/styles.15bdb384.js" type="text/javascript"></script>
+<script src="https://static.leetcode-cn.com/cn-mono-assets/production/head/noj-components.bdbcc484.js" type="text/javascript"></script>
+<script src="https://static.leetcode-cn.com/cn-mono-assets/production/head/noj-modules.ab3d1417.js" type="text/javascript"></script>
+<script src="https://static.leetcode-cn.com/cn-mono-assets/production/head/noj-dls.311640ec.js" type="text/javascript"></script>
+<script src="https://static.leetcode-cn.com/cn-mono-assets/production/head/noj-i18n.d5172644.js" type="text/javascript"></script>
+<script src="https://static.leetcode-cn.com/cn-mono-assets/production/head/noj-track.243577da.js" type="text/javascript"></script>
+<script src="https://static.leetcode-cn.com/cn-mono-assets/production/head/noj-common.9fa11f0c.js" type="text/javascript"></script>
+<script src="https://static.leetcode-cn.com/cn-mono-assets/production/head/noj-schema.a67bd10b.js" type="text/javascript"></script>
+<script src="https://static.leetcode-cn.com/cn-mono-assets/production/head/main.7a616da4.js" type="text/javascript"></script>
+  <script src="https://static.leetcode-cn.com/cn-legacy-assets/CACHE/js/output.edac5e1ed923.js"></script>
+
+  <script>
+    (function($, w, d){
+      $(function() {
+        $('#navbar-right img').addClass('img-rounded');
+        setFooterStyles();
+      });
+
+      function setFooterStyles() {
+        var $footer = $('#lc-footer'),
+            height = $footer.outerHeight();
+        if (!$footer.parent().is('body')) return ;
+        $footer.css('margin-top', -height);
+        $('.content-wrapper').css('padding-bottom', height);
+      }
+
+    }(jQuery, window, document));
+    try {
+      ace.config.set("basePath", "https://static.leetcode-cn.com/cn-legacy-assets/ace-builds/src-noconflict/")
+    } catch(err) {}
+  </script>
+
+
+    <script>
+      (function($, w, d){
+
+        $('#exit-mock-user-btn').click(function() {
+          $.ajax({
+            type: 'POST',
+            url: "/api/exit_mock_user/",
+            data: $('#exit-mock-user-form').serialize(),
+            success: function() {
+              window.location = window.location.href.split("?")[0];
+            }
+          });
+        });
+      }(jQuery, window, document));
+    </script>
+     
+<script>
+  var pageData = {
+    questionId: '2292',
+    questionIdHash: '',
+    questionTitleSlug: 'counting-words-with-a-given-prefix',
+    questionTitle: '统计包含给定前缀的字符串',
+    questionSourceTitle: 'Counting Words With a Given Prefix',
+    questionExampleTestcases: '[\u0022pay\u0022,\u0022attention\u0022,\u0022practice\u0022,\u0022attend\u0022]\u000A\u0022at\u0022\u000A[\u0022leetcode\u0022,\u0022win\u0022,\u0022loops\u0022,\u0022success\u0022]\u000A\u0022code\u0022',
+    categoryTitle: 'Algorithms',
+    contestTitleSlug: 'weekly-contest-282',
+    loginUrl: '/accounts/login/?next=/problems/counting-words-with-a-given-prefix/',
+    isSignedIn: true,
+
+    sessionId: '0',
+    reverseUrl: {
+      latest_submission: '/submissions/latest/',
+      account_login: '/accounts/login/',
+      maintenance: '/maintenance/',
+      profile: '/profile/'
+    },
+    enableRunCode:  true ,
+    enableSubmit: true ,
+    submitUrl: '/contest/api/weekly-contest-282/problems/counting-words-with-a-given-prefix/submit/',
+    interpretUrl: '/contest/api/weekly-contest-282/problems/counting-words-with-a-given-prefix/interpret_solution/',
+    judgeType: 'large',
+    nextChallengePairs: JSON.parse('null'),
+    codeDefinition: [{'value': 'cpp', 'text': 'C++', 'defaultCode': 'class Solution {\u000Apublic:\u000A    int prefixCount(vector\u003Cstring\u003E\u0026 words, string pref) {\u000A        \u000A    }\u000A}\u003B' },{'value': 'java', 'text': 'Java', 'defaultCode': 'class Solution {\u000A    public int prefixCount(String[] words, String pref) {\u000A\u000A    }\u000A}' },{'value': 'python', 'text': 'Python', 'defaultCode': 'class Solution(object):\u000A    def prefixCount(self, words, pref):\u000A        \u0022\u0022\u0022\u000A        :type words: List[str]\u000A        :type pref: str\u000A        :rtype: int\u000A        \u0022\u0022\u0022' },{'value': 'python3', 'text': 'Python3', 'defaultCode': 'class Solution:\u000A    def prefixCount(self, words: List[str], pref: str) \u002D\u003E int:' },{'value': 'c', 'text': 'C', 'defaultCode': '\u000A\u000Aint prefixCount(char ** words, int wordsSize, char * pref){\u000A\u000A}' },{'value': 'csharp', 'text': 'C#', 'defaultCode': 'public class Solution {\u000A    public int PrefixCount(string[] words, string pref) {\u000A\u000A    }\u000A}' },{'value': 'javascript', 'text': 'JavaScript', 'defaultCode': '/**\u000A * @param {string[]} words\u000A * @param {string} pref\u000A * @return {number}\u000A */\u000Avar prefixCount \u003D function(words, pref) {\u000A\u000A}\u003B' },{'value': 'ruby', 'text': 'Ruby', 'defaultCode': '# @param {String[]} words\u000A# @param {String} pref\u000A# @return {Integer}\u000Adef prefix_count(words, pref)\u000A\u000Aend' },{'value': 'swift', 'text': 'Swift', 'defaultCode': 'class Solution {\u000A    func prefixCount(_ words: [String], _ pref: String) \u002D\u003E Int {\u000A\u000A    }\u000A}' },{'value': 'golang', 'text': 'Go', 'defaultCode': 'func prefixCount(words []string, pref string) int {\u000A\u000A}' },{'value': 'scala', 'text': 'Scala', 'defaultCode': 'object Solution {\u000A    def prefixCount(words: Array[String], pref: String): Int \u003D {\u000A\u000A    }\u000A}' },{'value': 'kotlin', 'text': 'Kotlin', 'defaultCode': 'class Solution {\u000A    fun prefixCount(words: Array\u003CString\u003E, pref: String): Int {\u000A\u000A    }\u000A}' },{'value': 'rust', 'text': 'Rust', 'defaultCode': 'impl Solution {\u000A    pub fn prefix_count(words: Vec\u003CString\u003E, pref: String) \u002D\u003E i32 {\u000A\u000A    }\u000A}' },{'value': 'php', 'text': 'PHP', 'defaultCode': 'class Solution {\u000A\u000A    /**\u000A     * @param String[] $words\u000A     * @param String $pref\u000A     * @return Integer\u000A     */\u000A    function prefixCount($words, $pref) {\u000A\u000A    }\u000A}' },{'value': 'typescript', 'text': 'TypeScript', 'defaultCode': 'function prefixCount(words: string[], pref: string): number {\u000A\u000A}\u003B' },{'value': 'racket', 'text': 'Racket', 'defaultCode': '(define/contract (prefix\u002Dcount words pref)\u000A  (\u002D\u003E (listof string?) string? exact\u002Dinteger?)\u000A\u000A  )' },{'value': 'erlang', 'text': 'Erlang', 'defaultCode': '\u002Dspec prefix_count(Words :: [unicode:unicode_binary()], Pref :: unicode:unicode_binary()) \u002D\u003E integer().\u000Aprefix_count(Words, Pref) \u002D\u003E\u000A  .' },{'value': 'elixir', 'text': 'Elixir', 'defaultCode': 'defmodule Solution do\u000A  @spec prefix_count(words :: [String.t], pref :: String.t) :: integer\u000A  def prefix_count(words, pref) do\u000A\u000A  end\u000Aend' },],
+    enableTestMode: false,
+    metaData: JSON.parse('{\u000A  \u0022name\u0022: \u0022prefixCount\u0022,\u000A  \u0022params\u0022: [\u000A    {\u000A      \u0022name\u0022: \u0022words\u0022,\u000A      \u0022type\u0022: \u0022string[]\u0022\u000A    },\u000A    {\u000A      \u0022type\u0022: \u0022string\u0022,\u000A      \u0022name\u0022: \u0022pref\u0022\u000A    }\u000A  ],\u000A  \u0022return\u0022: {\u000A    \u0022type\u0022: \u0022integer\u0022\u000A  }\u000A}' || '{}'),
+    sampleTestCase: '[\u0022pay\u0022,\u0022attention\u0022,\u0022practice\u0022,\u0022attend\u0022]\u000A\u0022at\u0022',
+    judgerAvailable:  true ,
+    envInfo: JSON.parse('{\u0022cpp\u0022:[\u0022C++\u0022,\u0022\u003Cp\u003E\u005Cu7248\u005Cu672c\u005Cuff1a\u003Ccode\u003Eclang 11\u003C\u005C/code\u003E \u005Cu91c7\u005Cu7528\u005Cu6700\u005Cu65b0C++ 17\u005Cu6807\u005Cu51c6\u005Cu3002\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu7f16\u005Cu8bd1\u005Cu65f6\u005Cuff0c\u005Cu5c06\u005Cu4f1a\u005Cu91c7\u005Cu7528\u003Ccode\u003E\u002DO2\u003C\u005C/code\u003E\u005Cu7ea7\u005Cu4f18\u005Cu5316\u005Cu3002\u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/github.com\u005C/google\u005C/sanitizers\u005C/wiki\u005C/AddressSanitizer\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003EAddressSanitizer\u003C\u005C/a\u003E \u005Cu4e5f\u005Cu88ab\u005Cu5f00\u005Cu542f\u005Cu6765\u005Cu68c0\u005Cu6d4b\u003Ccode\u003Eout\u002Dof\u002Dbounds\u003C\u005C/code\u003E\u005Cu548c\u003Ccode\u003Euse\u002Dafter\u002Dfree\u003C\u005C/code\u003E\u005Cu9519\u005Cu8bef\u005Cu3002\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu4e3a\u005Cu4e86\u005Cu4f7f\u005Cu7528\u005Cu65b9\u005Cu4fbf\u005Cuff0c\u005Cu5927\u005Cu90e8\u005Cu5206\u005Cu6807\u005Cu51c6\u005Cu5e93\u005Cu7684\u005Cu5934\u005Cu6587\u005Cu4ef6\u005Cu5df2\u005Cu7ecf\u005Cu88ab\u005Cu81ea\u005Cu52a8\u005Cu5bfc\u005Cu5165\u005Cu3002\u003C\u005C/p\u003E\u0022],\u0022java\u0022:[\u0022Java\u0022,\u0022\u003Cp\u003E\u005Cu7248\u005Cu672c\u005Cuff1a\u003Ccode\u003EOpenJDK 17\u003C\u005C/code\u003E\u005Cu3002\u005Cu53ef\u005Cu4ee5\u005Cu4f7f\u005Cu7528Java 8\u005Cu7684\u005Cu7279\u005Cu6027\u005Cu4f8b\u005Cu5982\u005Cuff0clambda expressions \u005Cu548c stream API\u005Cu3002\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu4e3a\u005Cu4e86\u005Cu65b9\u005Cu4fbf\u005Cu8d77\u005Cu89c1\u005Cuff0c\u005Cu5927\u005Cu90e8\u005Cu5206\u005Cu6807\u005Cu51c6\u005Cu5e93\u005Cu7684\u005Cu5934\u005Cu6587\u005Cu4ef6\u005Cu5df2\u005Cu88ab\u005Cu5bfc\u005Cu5165\u005Cu3002\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu5305\u005Cu542b Pair \u005Cu7c7b: https:\u005C/\u005C/docs.oracle.com\u005C/javase\u005C/8\u005C/javafx\u005C/api\u005C/javafx\u005C/util\u005C/Pair.html \u003C\u005C/p\u003E\u0022],\u0022python\u0022:[\u0022Python\u0022,\u0022\u003Cp\u003E\u005Cu7248\u005Cu672c\u005Cuff1a \u003Ccode\u003EPython 2.7.12\u003C\u005C/code\u003E\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu4e3a\u005Cu4e86\u005Cu65b9\u005Cu4fbf\u005Cu8d77\u005Cu89c1\u005Cuff0c\u005Cu5927\u005Cu90e8\u005Cu5206\u005Cu5e38\u005Cu7528\u005Cu5e93\u005Cu5df2\u005Cu7ecf\u005Cu88ab\u005Cu81ea\u005Cu52a8 \u005Cu5bfc\u005Cu5165\u005Cuff0c\u005Cu5982\u005Cuff1a\u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/docs.python.org\u005C/2\u005C/library\u005C/array.html\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003Earray\u003C\u005C/a\u003E, \u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/docs.python.org\u005C/2\u005C/library\u005C/bisect.html\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003Ebisect\u003C\u005C/a\u003E, \u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/docs.python.org\u005C/2\u005C/library\u005C/collections.html\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003Ecollections\u003C\u005C/a\u003E\u005Cu3002\u005Cu5982\u005Cu679c\u005Cu60a8\u005Cu9700\u005Cu8981\u005Cu4f7f\u005Cu7528\u005Cu5176\u005Cu4ed6\u005Cu5e93\u005Cu51fd\u005Cu6570\u005Cuff0c\u005Cu8bf7\u005Cu81ea\u005Cu884c\u005Cu5bfc\u005Cu5165\u005Cu3002\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu6ce8\u005Cu610f Python 2.7 \u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/www.python.org\u005C/dev\u005C/peps\u005C/pep\u002D0373\u005C/\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003E\u005Cu5c06\u005Cu57282020\u005Cu5e74\u005Cu540e\u005Cu4e0d\u005Cu518d\u005Cu7ef4\u005Cu62a4\u003C\u005C/a\u003E\u005Cu3002 \u005Cu5982\u005Cu60f3\u005Cu4f7f\u005Cu7528\u005Cu6700\u005Cu65b0\u005Cu7248\u005Cu7684Python\u005Cuff0c\u005Cu8bf7\u005Cu9009\u005Cu62e9Python 3\u005Cu3002\u003C\u005C/p\u003E\u0022],\u0022c\u0022:[\u0022C\u0022,\u0022\u003Cp\u003E\u005Cu7248\u005Cu672c\u005Cuff1a\u003Ccode\u003EGCC 8.2\u003C\u005C/code\u003E\u005Cuff0c\u005Cu91c7\u005Cu7528GNU99\u005Cu6807\u005Cu51c6\u005Cu3002\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu7f16\u005Cu8bd1\u005Cu65f6\u005Cuff0c\u005Cu5c06\u005Cu4f1a\u005Cu91c7\u005Cu7528\u003Ccode\u003E\u002DO1\u003C\u005C/code\u003E\u005Cu7ea7\u005Cu4f18\u005Cu5316\u005Cu3002 \u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/github.com\u005C/google\u005C/sanitizers\u005C/wiki\u005C/AddressSanitizer\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003EAddressSanitizer\u003C\u005C/a\u003E\u005Cu4e5f\u005Cu88ab\u005Cu5f00\u005Cu542f\u005Cu6765\u005Cu68c0\u005Cu6d4b\u003Ccode\u003Eout\u002Dof\u002Dbounds\u003C\u005C/code\u003E\u005Cu548c\u003Ccode\u003Euse\u002Dafter\u002Dfree\u003C\u005C/code\u003E\u005Cu9519\u005Cu8bef\u005Cu3002\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu4e3a\u005Cu4e86\u005Cu4f7f\u005Cu7528\u005Cu65b9\u005Cu4fbf\u005Cuff0c\u005Cu5927\u005Cu90e8\u005Cu5206\u005Cu6807\u005Cu51c6\u005Cu5e93\u005Cu7684\u005Cu5934\u005Cu6587\u005Cu4ef6\u005Cu5df2\u005Cu7ecf\u005Cu88ab\u005Cu81ea\u005Cu52a8\u005Cu5bfc\u005Cu5165\u005Cu3002\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu5982\u005Cu60f3\u005Cu4f7f\u005Cu7528\u005Cu54c8\u005Cu5e0c\u005Cu8868\u005Cu8fd0\u005Cu7b97, \u005Cu60a8\u005Cu53ef\u005Cu4ee5\u005Cu4f7f\u005Cu7528 \u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/troydhanson.github.io\u005C/uthash\u005C/\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003Euthash\u003C\u005C/a\u003E\u005Cu3002 \u005C\u0022uthash.h\u005C\u0022\u005Cu5df2\u005Cu7ecf\u005Cu9ed8\u005Cu8ba4\u005Cu88ab\u005Cu5bfc\u005Cu5165\u005Cu3002\u005Cu8bf7\u005Cu770b\u005Cu5982\u005Cu4e0b\u005Cu793a\u005Cu4f8b:\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u003Cb\u003E1. \u005Cu5f80\u005Cu54c8\u005Cu5e0c\u005Cu8868\u005Cu4e2d\u005Cu6dfb\u005Cu52a0\u005Cu4e00\u005Cu4e2a\u005Cu5bf9\u005Cu8c61\u005Cuff1a\u003C\u005C/b\u003E\u005Cr\u005Cn\u003Cpre\u003E\u005Cr\u005Cnstruct hash_entry {\u005Cr\u005Cn    int id\u003B            \u005C/* we\u0027ll use this field as the key *\u005C/\u005Cr\u005Cn    char name[10]\u003B\u005Cr\u005Cn    UT_hash_handle hh\u003B \u005C/* makes this structure hashable *\u005C/\u005Cr\u005Cn}\u003B\u005Cr\u005Cn\u005Cr\u005Cnstruct hash_entry *users \u003D NULL\u003B\u005Cr\u005Cn\u005Cr\u005Cnvoid add_user(struct hash_entry *s) {\u005Cr\u005Cn    HASH_ADD_INT(users, id, s)\u003B\u005Cr\u005Cn}\u005Cr\u005Cn\u003C\u005C/pre\u003E\u005Cr\u005Cn\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u003Cb\u003E2. \u005Cu5728\u005Cu54c8\u005Cu5e0c\u005Cu8868\u005Cu4e2d\u005Cu67e5\u005Cu627e\u005Cu4e00\u005Cu4e2a\u005Cu5bf9\u005Cu8c61\u005Cuff1a\u003C\u005C/b\u003E\u005Cr\u005Cn\u003Cpre\u003E\u005Cr\u005Cnstruct hash_entry *find_user(int user_id) {\u005Cr\u005Cn    struct hash_entry *s\u003B\u005Cr\u005Cn    HASH_FIND_INT(users, \u0026user_id, s)\u003B\u005Cr\u005Cn    return s\u003B\u005Cr\u005Cn}\u005Cr\u005Cn\u003C\u005C/pre\u003E\u005Cr\u005Cn\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u003Cb\u003E3. \u005Cu4ece\u005Cu54c8\u005Cu5e0c\u005Cu8868\u005Cu4e2d\u005Cu5220\u005Cu9664\u005Cu4e00\u005Cu4e2a\u005Cu5bf9\u005Cu8c61\u005Cuff1a\u003C\u005C/b\u003E\u005Cr\u005Cn\u003Cpre\u003E\u005Cr\u005Cnvoid delete_user(struct hash_entry *user) {\u005Cr\u005Cn    HASH_DEL(users, user)\u003B  \u005Cr\u005Cn}\u005Cr\u005Cn\u003C\u005C/pre\u003E\u005Cr\u005Cn\u003C\u005C/p\u003E\u0022],\u0022csharp\u0022:[\u0022C#\u0022,\u0022\u003Cp\u003E\u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/docs.microsoft.com\u005C/en\u002Dus\u005C/dotnet\u005C/csharp\u005C/whats\u002Dnew\u005C/csharp\u002D9\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003EC# 10\u003C\u005C/a\u003E \u005Cu8fd0\u005Cu884c\u005Cu5728 .NET 6 \u005Cu4e0a\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu60a8\u005Cu7684\u005Cu4ee3\u005Cu7801\u005Cu5728\u005Cu7f16\u005Cu8bd1\u005Cu65f6\u005Cu9ed8\u005Cu8ba4\u005Cu5f00\u005Cu542f\u005Cu4e86debug\u005Cu6807\u005Cu8bb0(\u003Ccode\u003E\u005C/debug:pdbonly\u003C\u005C/code\u003E)\u005Cu3002\u003C\u005C/p\u003E\u0022],\u0022javascript\u0022:[\u0022JavaScript\u0022,\u0022\u003Cp\u003E\u005Cu7248\u005Cu672c\u005Cuff1a\u003Ccode\u003ENode.js 16.13.2\u003C\u005C/code\u003E\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu60a8\u005Cu7684\u005Cu4ee3\u005Cu7801\u005Cu5728\u005Cu6267\u005Cu884c\u005Cu65f6\u005Cu5c06\u005Cu5e26\u005Cu4e0a \u003Ccode\u003E\u002D\u002Dharmony\u003C\u005C/code\u003E \u005Cu6807\u005Cu8bb0\u005Cu6765\u005Cu5f00\u005Cu542f \u003Ca href\u003D\u005C\u0022http:\u005C/\u005C/node.green\u005C/\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003E\u005Cu65b0\u005Cu7248ES6\u005Cu7279\u005Cu6027\u003C\u005C/a\u003E\u005Cu3002\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/lodash.com\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003Elodash.js\u003C\u005C/a\u003E \u005Cu5e93\u005Cu5df2\u005Cu7ecf\u005Cu9ed8\u005Cu8ba4\u005Cu88ab\u005Cu5305\u005Cu542b\u005Cu3002\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E \u005Cu5982\u005Cu9700\u005Cu4f7f\u005Cu7528\u005Cu961f\u005Cu5217\u005C/\u005Cu4f18\u005Cu5148\u005Cu961f\u005Cu5217\u005Cuff0c\u005Cu60a8\u005Cu53ef\u005Cu4f7f\u005Cu7528 \u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/github.com\u005C/datastructures\u002Djs\u005C/priority\u002Dqueue\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003E datastructures\u002Djs\u005C/priority\u002Dqueue\u003C\u005C/a\u003E \u005Cu548c \u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/github.com\u005C/datastructures\u002Djs\u005C/queue\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003E datastructures\u002Djs\u005C/queue\u003C\u005C/a\u003E\u005Cu3002\u003C\u005C/p\u003E\u0022],\u0022ruby\u0022:[\u0022Ruby\u0022,\u0022\u003Cp\u003E\u005Cu4f7f\u005Cu7528\u003Ccode\u003ERuby 3.1\u003C\u005C/code\u003E\u005Cu6267\u005Cu884c\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu4e00\u005Cu4e9b\u005Cu5e38\u005Cu7528\u005Cu7684\u005Cu6570\u005Cu636e\u005Cu7ed3\u005Cu6784\u005Cu5df2\u005Cu5728 Algorithms \u005Cu6a21\u005Cu5757\u005Cu4e2d\u005Cu63d0\u005Cu4f9b\u005Cuff1ahttps:\u005C/\u005C/www.rubydoc.info\u005C/github\u005C/kanwei\u005C/algorithms\u005C/Algorithms\u003C\u005C/p\u003E\u0022],\u0022swift\u0022:[\u0022Swift\u0022,\u0022\u003Cp\u003E\u005Cu7248\u005Cu672c\u005Cuff1a\u003Ccode\u003ESwift 5.5.2\u003C\u005C/code\u003E\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu6211\u005Cu4eec\u005Cu901a\u005Cu5e38\u005Cu4fdd\u005Cu8bc1\u005Cu66f4\u005Cu65b0\u005Cu5230 \u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/swift.org\u005C/download\u005C/\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003EApple\u005Cu653e\u005Cu51fa\u005Cu7684\u005Cu6700\u005Cu65b0\u005Cu7248Swift\u003C\u005C/a\u003E\u005Cu3002\u005Cu5982\u005Cu679c\u005Cu60a8\u005Cu53d1\u005Cu73b0Swift\u005Cu4e0d\u005Cu662f\u005Cu6700\u005Cu65b0\u005Cu7248\u005Cu7684\u005Cuff0c\u005Cu8bf7\u005Cu8054\u005Cu7cfb\u005Cu6211\u005Cu4eec\u005Cuff01\u005Cu6211\u005Cu4eec\u005Cu5c06\u005Cu5c3d\u005Cu5feb\u005Cu66f4\u005Cu65b0\u005Cu3002\u003C\u005C/p\u003E\u0022],\u0022golang\u0022:[\u0022Go\u0022,\u0022\u003Cp\u003E\u005Cu7248\u005Cu672c\u005Cuff1a\u003Ccode\u003EGo 1.17\u003C\u005C/code\u003E\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu652f\u005Cu6301 \u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/godoc.org\u005C/github.com\u005C/emirpasic\u005C/gods\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003Ehttps:\u005C/\u005C/godoc.org\u005C/github.com\u005C/emirpasic\u005C/gods\u003C\u005C/a\u003E \u005Cu7b2c\u005Cu4e09\u005Cu65b9\u005Cu5e93\u005Cu3002\u003C\u005C/p\u003E\u0022],\u0022python3\u0022:[\u0022Python3\u0022,\u0022\u003Cp\u003E\u005Cu7248\u005Cu672c\u005Cuff1a\u003Ccode\u003EPython 3.10\u003C\u005C/code\u003E\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu4e3a\u005Cu4e86\u005Cu65b9\u005Cu4fbf\u005Cu8d77\u005Cu89c1\u005Cuff0c\u005Cu5927\u005Cu90e8\u005Cu5206\u005Cu5e38\u005Cu7528\u005Cu5e93\u005Cu5df2\u005Cu7ecf\u005Cu88ab\u005Cu81ea\u005Cu52a8 \u005Cu5bfc\u005Cu5165\u005Cuff0c\u005Cu5982\u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/docs.python.org\u005C/3\u005C/library\u005C/array.html\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003Earray\u003C\u005C/a\u003E, \u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/docs.python.org\u005C/3\u005C/library\u005C/bisect.html\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003Ebisect\u003C\u005C/a\u003E, \u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/docs.python.org\u005C/3\u005C/library\u005C/collections.html\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003Ecollections\u003C\u005C/a\u003E\u005Cu3002 \u005Cu5982\u005Cu679c\u005Cu60a8\u005Cu9700\u005Cu8981\u005Cu4f7f\u005Cu7528\u005Cu5176\u005Cu4ed6\u005Cu5e93\u005Cu51fd\u005Cu6570\u005Cuff0c\u005Cu8bf7\u005Cu81ea\u005Cu884c\u005Cu5bfc\u005Cu5165\u005Cu3002\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu5982\u005Cu9700\u005Cu4f7f\u005Cu7528 Map\u005C/TreeMap \u005Cu6570\u005Cu636e\u005Cu7ed3\u005Cu6784\u005Cuff0c\u005Cu60a8\u005Cu53ef\u005Cu4f7f\u005Cu7528 \u003Ca href\u003D\u005C\u0022http:\u005C/\u005C/www.grantjenks.com\u005C/docs\u005C/sortedcontainers\u005C/\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003Esortedcontainers\u003C\u005C/a\u003E \u005Cu5e93\u005Cu3002\u003C\u005C/p\u003E\u0022],\u0022scala\u0022:[\u0022Scala\u0022,\u0022\u003Cp\u003E\u005Cu7248\u005Cu672c\u005Cuff1a\u003Ccode\u003EScala 2.13\u003C\u005C/code\u003E\u003C\u005C/p\u003E\u0022],\u0022kotlin\u0022:[\u0022Kotlin\u0022,\u0022\u003Cp\u003E\u005Cu7248\u005Cu672c\u005Cuff1a\u003Ccode\u003EKotlin 1.3.10\u003C\u005C/code\u003E\u003C\u005C/p\u003E\u0022],\u0022rust\u0022:[\u0022Rust\u0022,\u0022\u003Cp\u003E\u005Cu7248\u005Cu672c\u005Cuff1a\u003Ccode\u003Erust 1.58.1\u003C\u005C/code\u003E\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu652f\u005Cu6301 crates.io \u005Cu7684 \u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/crates.io\u005C/crates\u005C/rand\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003Erand\u003C\u005C/a\u003E\u003C\u005C/p\u003E\u0022],\u0022php\u0022:[\u0022PHP\u0022,\u0022\u003Cp\u003E\u003Ccode\u003EPHP 8.1\u003C\u005C/code\u003E.\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003EWith bcmath module.\u003C\u005C/p\u003E\u0022],\u0022typescript\u0022:[\u0022TypeScript\u0022,\u0022\u003Cp\u003ETypeScript 4.5.4\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003ECompile Options: \u002D\u002DalwaysStrict \u002D\u002DstrictBindCallApply \u002D\u002DstrictFunctionTypes \u002D\u002Dtarget ES2020\u003C\u005C/p\u003E\u0022],\u0022racket\u0022:[\u0022Racket\u0022,\u0022\u003Cp\u003E\u003Ca href\u003D\u005C\u0022https:\u005C/\u005C/docs.racket\u002Dlang.org\u005C/guide\u005C/performance.html#%28tech._c%29\u005C\u0022 target\u003D\u005C\u0022_blank\u005C\u0022\u003ERacket CS\u003C\u005C/a\u003E v8.3\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu4f7f\u005Cu7528 #lang racket\u003C\u005C/p\u003E\u005Cr\u005Cn\u005Cr\u005Cn\u003Cp\u003E\u005Cu5df2\u005Cu9884\u005Cu5148 (require data\u005C/gvector data\u005C/queue data\u005C/order data\u005C/heap). \u005Cu82e5\u005Cu9700\u005Cu4f7f\u005Cu7528\u005Cu5176\u005Cu5b83\u005Cu6570\u005Cu636e\u005Cu7ed3\u005Cu6784\u005Cuff0c\u005Cu53ef\u005Cu81ea\u005Cu884c require\u005Cu3002\u003C\u005C/p\u003E\u0022],\u0022erlang\u0022:[\u0022Erlang\u0022,\u0022Erlang\u005C/OTP 24.2\u0022],\u0022elixir\u0022:[\u0022Elixir\u0022,\u0022Elixir 1.13.0 with Erlang\u005C/OTP 24.2\u0022]}'),
+    questionContent: '\u003Cp\u003E给你一个字符串数组 \u003Ccode\u003Ewords\u003C/code\u003E 和一个字符串 \u003Ccode\u003Epref\u003C/code\u003E 。\u003C/p\u003E\u000A\u000A\u003Cp\u003E返回 \u003Ccode\u003Ewords\u003C/code\u003E\u003Cem\u003E \u003C/em\u003E中以 \u003Ccode\u003Epref\u003C/code\u003E 作为 \u003Cstrong\u003E前缀\u003C/strong\u003E 的字符串的数目。\u003C/p\u003E\u000A\u000A\u003Cp\u003E字符串 \u003Ccode\u003Es\u003C/code\u003E 的 \u003Cstrong\u003E前缀\u003C/strong\u003E 就是\u0026nbsp\u003B \u003Ccode\u003Es\u003C/code\u003E 的任一前导连续字符串。\u003C/p\u003E\u000A\u000A\u003Cp\u003E\u0026nbsp\u003B\u003C/p\u003E\u000A\u000A\u003Cp\u003E\u003Cstrong\u003E示例 1：\u003C/strong\u003E\u003C/p\u003E\u000A\u000A\u003Cpre\u003E\u003Cstrong\u003E输入：\u003C/strong\u003Ewords \u003D [\u0022pay\u0022,\u0022\u003Cem\u003E\u003Cstrong\u003Eat\u003C/strong\u003E\u003C/em\u003Etention\u0022,\u0022practice\u0022,\u0022\u003Cem\u003E\u003Cstrong\u003Eat\u003C/strong\u003E\u003C/em\u003Etend\u0022], \u003Ccode\u003Epref \u003C/code\u003E\u003D \u0022at\u0022\u000A\u003Cstrong\u003E输出：\u003C/strong\u003E2\u000A\u003Cstrong\u003E解释：\u003C/strong\u003E以 \u0022at\u0022 作为前缀的字符串有两个，分别是：\u0022\u003Cem\u003E\u003Cstrong\u003Eat\u003C/strong\u003E\u003C/em\u003Etention\u0022 和 \u0022\u003Cem\u003E\u003Cstrong\u003Eat\u003C/strong\u003E\u003C/em\u003Etend\u0022 。\u000A\u003C/pre\u003E\u000A\u000A\u003Cp\u003E\u003Cstrong\u003E示例 2：\u003C/strong\u003E\u003C/p\u003E\u000A\u000A\u003Cpre\u003E\u003Cstrong\u003E输入：\u003C/strong\u003Ewords \u003D [\u0022leetcode\u0022,\u0022win\u0022,\u0022loops\u0022,\u0022success\u0022], \u003Ccode\u003Epref \u003C/code\u003E\u003D \u0022code\u0022\u000A\u003Cstrong\u003E输出：\u003C/strong\u003E0\u000A\u003Cstrong\u003E解释：\u003C/strong\u003E不存在以 \u0022code\u0022 作为前缀的字符串。\u000A\u003C/pre\u003E\u000A\u000A\u003Cp\u003E\u0026nbsp\u003B\u003C/p\u003E\u000A\u000A\u003Cp\u003E\u003Cstrong\u003E提示：\u003C/strong\u003E\u003C/p\u003E\u000A\u000A\u003Cul\u003E\u000A\u0009\u003Cli\u003E\u003Ccode\u003E1 \u0026lt\u003B\u003D words.length \u0026lt\u003B\u003D 100\u003C/code\u003E\u003C/li\u003E\u000A\u0009\u003Cli\u003E\u003Ccode\u003E1 \u0026lt\u003B\u003D words[i].length, pref.length \u0026lt\u003B\u003D 100\u003C/code\u003E\u003C/li\u003E\u000A\u0009\u003Cli\u003E\u003Ccode\u003Ewords[i]\u003C/code\u003E 和 \u003Ccode\u003Epref\u003C/code\u003E 由小写英文字母组成\u003C/li\u003E\u000A\u003C/ul\u003E\u000A',
+    questionSourceContent: '\u003Cp\u003EYou are given an array of strings \u003Ccode\u003Ewords\u003C/code\u003E and a string \u003Ccode\u003Epref\u003C/code\u003E.\u003C/p\u003E\u000A\u000A\u003Cp\u003EReturn \u003Cem\u003Ethe number of strings in \u003C/em\u003E\u003Ccode\u003Ewords\u003C/code\u003E\u003Cem\u003E that contain \u003C/em\u003E\u003Ccode\u003Epref\u003C/code\u003E\u003Cem\u003E as a \u003Cstrong\u003Eprefix\u003C/strong\u003E\u003C/em\u003E.\u003C/p\u003E\u000A\u000A\u003Cp\u003EA \u003Cstrong\u003Eprefix\u003C/strong\u003E of a string \u003Ccode\u003Es\u003C/code\u003E is any leading contiguous substring of \u003Ccode\u003Es\u003C/code\u003E.\u003C/p\u003E\u000A\u000A\u003Cp\u003E\u0026nbsp\u003B\u003C/p\u003E\u000A\u003Cp\u003E\u003Cstrong\u003EExample 1:\u003C/strong\u003E\u003C/p\u003E\u000A\u000A\u003Cpre\u003E\u000A\u003Cstrong\u003EInput:\u003C/strong\u003E words \u003D [\u0026quot\u003Bpay\u0026quot\u003B,\u0026quot\u003B\u003Cstrong\u003E\u003Cu\u003Eat\u003C/u\u003E\u003C/strong\u003Etention\u0026quot\u003B,\u0026quot\u003Bpractice\u0026quot\u003B,\u0026quot\u003B\u003Cu\u003E\u003Cstrong\u003Eat\u003C/strong\u003E\u003C/u\u003Etend\u0026quot\u003B], \u003Ccode\u003Epref \u003C/code\u003E\u003D \u0026quot\u003Bat\u0026quot\u003B\u000A\u003Cstrong\u003EOutput:\u003C/strong\u003E 2\u000A\u003Cstrong\u003EExplanation:\u003C/strong\u003E The 2 strings that contain \u0026quot\u003Bat\u0026quot\u003B as a prefix are: \u0026quot\u003B\u003Cu\u003E\u003Cstrong\u003Eat\u003C/strong\u003E\u003C/u\u003Etention\u0026quot\u003B and \u0026quot\u003B\u003Cu\u003E\u003Cstrong\u003Eat\u003C/strong\u003E\u003C/u\u003Etend\u0026quot\u003B.\u000A\u003C/pre\u003E\u000A\u000A\u003Cp\u003E\u003Cstrong\u003EExample 2:\u003C/strong\u003E\u003C/p\u003E\u000A\u000A\u003Cpre\u003E\u000A\u003Cstrong\u003EInput:\u003C/strong\u003E words \u003D [\u0026quot\u003Bleetcode\u0026quot\u003B,\u0026quot\u003Bwin\u0026quot\u003B,\u0026quot\u003Bloops\u0026quot\u003B,\u0026quot\u003Bsuccess\u0026quot\u003B], \u003Ccode\u003Epref \u003C/code\u003E\u003D \u0026quot\u003Bcode\u0026quot\u003B\u000A\u003Cstrong\u003EOutput:\u003C/strong\u003E 0\u000A\u003Cstrong\u003EExplanation:\u003C/strong\u003E There are no strings that contain \u0026quot\u003Bcode\u0026quot\u003B as a prefix.\u000A\u003C/pre\u003E\u000A\u000A\u003Cp\u003E\u0026nbsp\u003B\u003C/p\u003E\u000A\u003Cp\u003E\u003Cstrong\u003EConstraints:\u003C/strong\u003E\u003C/p\u003E\u000A\u000A\u003Cul\u003E\u000A\u0009\u003Cli\u003E\u003Ccode\u003E1 \u0026lt\u003B\u003D words.length \u0026lt\u003B\u003D 100\u003C/code\u003E\u003C/li\u003E\u000A\u0009\u003Cli\u003E\u003Ccode\u003E1 \u0026lt\u003B\u003D words[i].length, pref.length \u0026lt\u003B\u003D 100\u003C/code\u003E\u003C/li\u003E\u000A\u0009\u003Cli\u003E\u003Ccode\u003Ewords[i]\u003C/code\u003E and \u003Ccode\u003Epref\u003C/code\u003E consist of lowercase English letters.\u003C/li\u003E\u000A\u003C/ul\u003E\u000A',
+    editorType: 'CKEDITOR',
+  };
+</script>
+<script src="https://static.leetcode-cn.com/cn-legacy-assets/angular-nvd3/node_modules/d3/d3.min.js"></script>
+<script src="https://static.leetcode-cn.com/cn-legacy-assets/CACHE/js/output.d5ce74b49e38.js"></script>
+
+  <script src="https://static.leetcode-cn.com/cn-assets/webpack_bundles/apps/contest/question_detail.b9c985951.js" type="text/javascript"></script>
+
+
+    
+      <script>
+var userAgent = window.navigator.userAgent;
+var isLeetCodeWebView = /leetcode/i.test(userAgent);
+var isAndroid = /android/i.test(userAgent);
+var isIOSMobile = /iPhone|iPod/i.test(userAgent);
+
+if(isLeetCodeWebView) {
+    // Home page hotfix
+    if(window.location.pathname.includes("/problemset/")) {
+        
+        if(localStorage.getItem("problem-list:itemsPerPage") < 9007199254740991) {
+            localStorage.setItem("problem-list:itemsPerPage", 9007199254740991);
+            localStorage.setItem("problem-list:itemsPerPage-updated-time", new Date().getTime());
+            location.reload();
+        }
+
+        var qTitleSize = 15;
+        var qSubtitleSize = 12;
+
+        var qSidePadding = 16;
+        var qTBPadding = 12;
+        var qRowHeight = 90;
+
+        var applyDarkstyle = ``;
+
+        // Light Color
+        var textColor = "#000";
+        var qRowBGColor = "#fff";
+        var qRowBorderColor = "#fafafa";
+        var qDiffBG = "#f5f5f7";
+
+        // Dark Style
+        var darkstyle = `
+                .question-list-base {
+                    /*background: rgba(0,0,0,0.02);*/
+                }
+            `;
+
+        if(window.location.href.includes("isDark=true")) {
+            applyDarkstyle = darkstyle;
+            // Dark Color
+            textColor = "#fff";
+            qRowBGColor = "#1b1b1d";
+            qRowBorderColor = "#232325";
+            qDiffBG = "#2d2d30";
+        }
+
+
+        var appOnlyStyle = `
+            * {
+                -webkit-user-select: none;  
+                -moz-user-select: none;    
+                -ms-user-select: none;      
+                user-select: none;
+            }
+
+            .table-responsive.question-list-table {
+                overflow-x: hidden;
+            }
+
+            body, html {
+                background: ${qRowBGColor};
+            }
+            
+            .question-status-column,
+            #noj-navbar,
+            .category-group-base,
+            .assess-bar,
+            .question-filter-base,
+            .blog-sidebar,
+            #lc-footer,
+            hr.line.dotted.question-list-hr,
+            .reactable-pagination,
+            .reactable-th-frequency.reactable-header-sortable,
+            .frequency-column,
+            .reactable-th-status.reactable-header-sortable,
+            .tooltip.top.in,
+            .table-responsive.question-list-table thead,
+            .lock__13du {
+                display: none !important;
+            }
+            .question-disabled {
+                pointer-events: none;
+                position: relative;
+                opacity: 0.38;
+            }
+            .question-disabled::after {
+                content: "\\f023";
+                font: normal normal normal 14px/1 FontAwesome;
+                color: #ffa115;
+                font-size: 14px;
+                display: inline-block;
+                margin-left: 10px;
+            }
+            .blog-main,
+            .container {
+                width: 100%;
+            }
+            #base_content {
+                width: 100vw;
+            }
+            .content-wrapper,
+            .table-responsive.question-list-table {
+                padding-bottom: 0 !important;
+                margin-bottom: 0 !important;
+            }
+            table.table-striped {
+                margin-bottom: 0;
+            }
+            .reactable-th-question_id,
+            tbody.reactable-data tr > td:nth-child(2) {
+                
+            }
+            
+            /* tr row */
+            .question-list-table table tbody.reactable-data tr {
+                display: flex;
+                width: 100vw;
+                position: relative;
+                height: ${qRowHeight}px;
+                padding: ${qTBPadding}px ${qSidePadding}px;
+                background: ${qRowBGColor} !important;
+                border-top: 1px solid ${qRowBorderColor};
+            }
+            .question-list-table table tbody.reactable-data tr:hover {
+                background: ${qRowBGColor} !important;
+            }
+            tbody.reactable-data td {
+                
+            }
+
+            /* id */
+            tbody.reactable-data tr > td:nth-child(2) {
+                color: ${textColor};
+                padding-right: 0;
+                padding-left: 0;
+                font-weight: 500;
+                font-size: ${qTitleSize}px;
+                white-space: nowrap;
+            }
+            tbody.reactable-data tr > td:nth-child(2)::after {
+                content: ".";
+                display: inline-block;
+            }
+            /* title */
+            tbody.reactable-data tr > td:nth-child(3) {
+                width: 100%;
+                font-weight: 500;
+                font-size: ${qTitleSize}px;
+            }
+            .question-list-table tbody .question-title {
+                overflow: initial;
+                max-width: none;
+            }
+            .question-list-table tbody .question-title a {
+                color: ${textColor};
+                display: block;
+                height: ${qRowHeight}px;
+                position: relative;
+                transform: translateY(-${qTBPadding + 8}px);
+                padding-top: ${qTBPadding + 8}px;
+                z-index: 1;
+            }
+
+            /* status */
+            .question-status-column {
+                /*
+                position: absolute;
+                bottom: ${qTBPadding}px;
+                left: ${qSidePadding}px;
+                */
+            }
+
+            /* solution */
+            tbody.reactable-data tr > td:nth-child(4) {
+                position: absolute;
+                bottom: ${qTBPadding}px;
+                left: ${qSidePadding}px;
+            }
+            a.solution-link {
+                font-size: ${qSubtitleSize}px;
+            }
+            a.solution-link::before {
+                content: "题解${'\\00a0'}";
+                display: inline-block;
+            }
+
+            /* acc */
+            tbody.reactable-data tr > td:nth-child(5) {
+                position: absolute;
+                bottom: ${qTBPadding}px;
+                right: ${qSidePadding}px;
+                font-size: ${qSubtitleSize}px;
+            }
+            tbody.reactable-data tr > td:nth-child(5)::before {
+                content: "通过率${'\\00a0'}";
+                display: inline-block;
+            }
+
+            /* difficulty */
+            tbody.reactable-data tr > td:nth-child(6) {
+                order: -1;
+                margin-left: -3px;
+            }
+            .question-list-table span.level-hard {
+                color: #fe3e2f;
+            }
+            .question-list-table span.level-medium {
+                color: #fe9500;
+            }
+            .question-list-table span.level-easy {
+                color: #35c759;
+            }
+            span[class*="level-"] {
+                font-size: 12px;
+                border-radius: 5px;
+                background: ${qDiffBG};
+                padding: 2px 5px;
+                white-space: nowrap;
+            }
+            span[class*="level-"]::after {
+                
+            }
+        `;
+        var appOnlyHTML = document.createElement("div");
+        appOnlyHTML.innerHTML = `
+            <style>
+            ${appOnlyStyle}
+            ${applyDarkstyle}
+            </style>
+        `;
+        var appInsert = document.querySelector(".content-wrapper");
+        appInsert.insertBefore(appOnlyHTML, document.getElementById("base_content"));
+    }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style>
+/* 暂时下架白色帽子 */
+</style>
+  
+  
+<style>
+section#app-heading main > h2 {
+  position: relative;
+}
+section#app-heading main > h2::after {
+  display: block;
+  position: absolute;
+  content: "全新 2.2，原生体验、在线编程";
+  top: -24px;
+  left: 0;
+  background: #ec417a;
+  border-radius: 100px;
+  font-size: 16px;
+  padding: 1px 8px;
+  color: #fff;
+  white-space: nowrap;
+  animation: shineApp 1s infinite;
+}
+
+@media (max-width: 839px) {
+  section#app-heading main > h2::after {
+    left: 50%;
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+</style>
+
+
+
+
+<!-- Nav New Tag-->
+<style>
+a[class*="BaseButtonComponent-AppButton"] {
+  position: relative;
+  overflow: initial;
+}
+
+a[class*="BaseButtonComponent-AppButton"]::after {
+  display: block;
+  position: absolute;
+  content: "新功能";
+  top: -6px;
+  right: -18px;
+  background: #ec417a;
+  border-radius: 100px;
+  font-size: 12px;
+  padding: 0 5px;
+  color: #fff;
+  white-space: nowrap;
+  transform: scale(0.6);
+  animation: shineApp 1s infinite;
+}
+
+@keyframes shineApp {
+  0% {background: #ec417a;}
+  50% {background: #f69f41;}
+  100% {background: #ec417a;}
+}
+</style>
+
+
+
+<style>
+.css-hfz3b8-TimeRemainContainer.edy4jpc3 {
+  color: orange;
+}
+.css-hfz3b8-TimeRemainContainer.edy4jpc3 div {
+  font-weight: bold;
+}
+
+/* LeetBook */
+[class*="NavWrapper"] > [class*="NavContainer"] > ul[class*="NavbarList"] > li[class*="NavbarListItem"]:nth-child(2)::after {
+  display: block;
+  position: absolute;
+  content: "NEW";
+  top: -10px;
+  left: 10px;
+  background: #f05353;
+  border-radius: 100px;
+  font-size: 12px;
+  padding: 0 5px;
+  color: #fff;
+  white-space: nowrap;
+  transform: scale(0.6);
+}
+
+/* 讨论 */
+
+aside > .css-1ciijib-Container > .css-1jbpjnq-layer1-CardContainer.er3nkrt0 {
+  display: none;
+}
+
+[class*="QuestionContent"] [class*="RowWrapper"] .css-1qq99jl-Dot,
+[class*="QuestionContent"] [class*="RowWrapper"] [class*="InfoItem"]:nth-child(4) {
+    display: none;
+}
+
+/* Jobs */
+[class*="NavWrapper"] > [class*="NavContainer"] > ul[class*="NavbarList"] > li[class*="NavbarListItem"]:nth-child(6)::after {
+  display: block;
+  position: absolute;
+  content: "招聘";
+  top: -10px;
+  left: 10px;
+  background: #009af8;
+  border-radius: 100px;
+  font-size: 12px;
+  padding: 0 5px;
+  color: #fff;
+  white-space: nowrap;
+  transform: scale(0.6);
+}
+
+
+/* Circle */
+.dark .css-tzk3f3-layer1-cardStyle-QuestionDetailWrapper,
+.dark .css-198vz0v-layer1-cardStyle-Wrapper,
+.dark .css-flkkl3-layer1-cardStyle-Wrapper,
+.dark .css-1vt9p6e-layer1-cardStyle-AnswerDetailWrapper,
+.dark .css-1pn4im8-layer1-cardStyle-SortingWrapper
+{
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.25);
+}
+
+.css-yz9tnq-StyledLink,
+.css-1jbpjnq-layer1-CardContainer,
+.css-d5jkwy-layer1-RowWrapper-DiscussionRowWrapper.eoy0kve1,
+.css-tzk3f3-layer1-cardStyle-QuestionDetailWrapper,
+.css-198vz0v-layer1-cardStyle-Wrapper,
+.css-flkkl3-layer1-cardStyle-Wrapper,
+.css-1vt9p6e-layer1-cardStyle-AnswerDetailWrapper,
+.css-1pn4im8-layer1-cardStyle-SortingWrapper
+{
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+[class*="NavWrapper"] > [class*="NavContainer"] > ul[class*="NavbarList"] > li[class*="NavbarListItem"]:nth-child(4)::after {
+  display: none;
+  position: absolute;
+  content: "热门";
+  background: #fe9411;
+  top: -10px;
+  left: 10px;
+  border-radius: 100px;
+  font-size: 12px;
+  padding: 0 5px;
+  color: #fff;
+  white-space: nowrap;
+  transform: scale(0.6);
+}
+
+
+
+/* LCCUP Hotfix */
+.css-1xdyuwt-TableContainer-StyledTableContainer,
+.css-1hdvnn3-TableContainer-StyledTableContainer {
+  width: 1240px;
+}
+
+
+[class*="cardStyle-QuestionDetailWrapper"] > [class*="QuestionContent"] > [class*="QuestionTitle"] {
+  margin-bottom: 0;
+}
+[class*="cardStyle-QuestionDetailWrapper"] > [class*="QuestionContent"] > [class*="RowWrapper"]:nth-child(2) {
+  margin-top: 0;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- HOTFIX -->
+<style>
+/* Contest Banner for Mobile Hotfix */
+@media only screen and (max-width: 400px) {
+  .contest-home-base [class*="wrapper"][class*="publicity"] {
+    background-size: 100%;
+    max-height: 200px;
+  }
+}
+
+.css-20btl1-RefillButton.edy4jpc4 {
+  font-weight: bold;
+}
+
+.country-name[data-original-title="中国"] {
+  display: none;
+}
+
+
+.question-list-base .question-list-table .fa.fa-info-circle.title-tooltip[data-placement="top"] {
+  display: none;
+}
+
+</style>
+<script>
+  // Home page hotfix
+  if(window.location.pathname == "/" && false) {
+  var homeOnlyHtml = document.createElement("div");
+  homeOnlyHtml.innerHTML = `
+  <style>
+  #noj-navbar {
+    position: relative;
+    z-index: 10;
+  }
+  @media (min-width: 991px) {
+  #student-banner {
+    display: none;
+  }
+  }
+  #student-banner {
+    width: 100%;
+    text-align: center;
+    margin-top: -20px;
+    background-image: url("https://pic.leetcode-cn.com/62644078c3ecf3426368ade02b44452d554659ff39ecd02eba9ff3c7b50c45d1-banner_mobile_2@2x.png");
+    background-position: 50% 50%;
+    background-size: auto 100%;
+  }
+  #student-banner img {
+    width: 100%;
+    margin: auto;
+    max-width: 550px;
+  }
+  </style>
+  <a  href="/contest/season/2019-fall/" target="_blank">
+  <div id="student-banner">
+  <img src="https://pic.leetcode-cn.com/511cb1a57e8506bb63f080d897e542d759cedd209e15bae81975dc1433ea01c3-banner_mobile@_12x.png"/>
+  </div>
+  </a>
+  `;
+  var homeInsert = document.querySelector(".content-wrapper");
+  homeInsert.insertBefore(homeOnlyHtml, document.getElementById("base_content"));
+  }
+  </script>
+
+
+
+
+
+<style>
+  .content-wrapper #base_content {
+    margin-top: 0;
+  }
+  
+  /* Old question description fix */
+  .question-content blockquote {
+    font-size: 14px;
+  }
+  /* Playground fix */
+  .container-fluid.playground-base .editor-base,
+  .container-fluid.playground-base .console-base {
+    margin-top: -44px;
+  }
+  
+  .modal-backdrop.fade.in {
+    display: none;
+  }
+  
+  .container-fluid.playground-base .full-screen-btn {
+    display: none;
+  }
+  
+  
+  /*Hide contest discuss*/
+  .btn-default[href*="/contest/"][href*="/discuss/"] {
+    display: none;
+  }
+  
+  .global-ranking-base [class*="simple-avatar"] [href*="/leetcode-cn.com/"]::after {
+    content: "🇨🇳";
+    display: block;
+    position: absolute;
+    color: red;
+    top: 9px;
+    right: 18px;
+    font-size: 30px;
+  }
+  [data-original-title*="China"] {
+    opacity: 0;
+    display: none;
+  }
+  td a.ranking-username {
+    display: inline;
+  }
+  .ranking-username[href*="/leetcode-cn.com/"] {
+    position: relative;
+  }
+  .ranking-username[href*="/leetcode-cn.com/"]::after {
+    content: "🇨🇳";
+    display: block;
+    position: absolute;
+    color: red;
+    top: -5px;
+    right: -28px;
+    font-size: 20px;
+  }
+  
+  .content-wrapper label.lang-switcher {
+    font-weight: bold;
+    color: black;
+  }
+  #noj-navbar {
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  div[class*="PositionContainer"] {
+    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  }
+  
+  #noj-navbar [class*="NavWrapper"] {
+    border-bottom: none;
+  }
+  .playground-base .toolbar-base,
+  .playground-base .result .console-header {
+    box-shadow: none;
+  }
+  .playground-base .toolbar-base {
+    border-bottom: solid 1px #eee;
+  }
+  
+  .playground-base .row .console-base {
+    border-left: solid 1px #eee;
+  }
+  .playground-base .row .toolbar-bot-base,
+  .playground-base .console-input-base textarea {
+    border-top: solid 1px #eee;
+  }
+  .playground-base .result .output-base pre#output {
+    padding: 0;
+  }
+  @media (max-width: 767px) {
+    .playground-base .playground-title-base {
+      display: none;
+    }
+  }
+  </style>
+  <!-- HOTFIX -->
+
+  
+  <!--@START: Nav Highlight Tag -->
+<style>
+  [class*="NavbarListItem"] {
+    position: relative;
+  }
+  [class*="NavbarListItem"] > a {
+    position: relative;
+  }
+  [class*="NavbarListItem"] > a[href="/contest/"]::after{
+    display: none;
+    font-size: 12px;
+    background: #48d59c;
+    position: absolute;
+    top: -10px;
+    left: 2px;
+    font-weight: 500;
+    transform: scale(0.6);
+    content: "力扣杯";
+    color: white;
+    height: 20px;
+    width: 46px;
+    text-align: center;
+    border-radius: 100px;
+    }
+</style>
+<!--@END: Nav Highlight Tag -->
+  
+  
+  
+  <style>
+  #question-detail-app a[href="/problems/two-sum/solution/"] {
+    position: relative;
+  }
+  #question-detail-app a[href="/problems/two-sum/solution/"]::after {
+    content: "new";
+    display: block;
+    color: red;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  </style>
+  
+
+
+
+<script>
+  var isContest = window.location.pathname == "/contest/";
+
+  // dynamic script
+  function findContestBanner(selector) {
+    if (document.querySelector(selector) == null) {
+      setTimeout(function() {
+        findContestBanner(selector);
+      }, 100);
+    } else {
+      // Do something
+      /*
+      document.querySelector(selector).onclick = function() {
+        window.open('https://datayi.cn/w/1R37830R','_blank');
+      }; */
+
+      // 合作竞赛 - 竞赛卡片替换链接
+      /* const aElem = document.querySelector('.contest-cards-base .contest-card.new-contest > a')
+      if (aElem) {
+        aElem.href = 'https://leetcode-cn.com/contest/weekly-contest-188/?utm_campaign=weekly_contest_2020_tusimple_188&utm_medium=contest_card&utm_source=contest&gio_link_id=z98jEWyP'
+      } */
+    }
+  }
+
+  findContestBanner("#contest-app .contest-home-base .wrapper__KAWb");
+</script>
+
+  
+  <script type="text/javascript">
+  /*
+  $("footer.site-footer .copyright a span").html("© 2018 力扣信息科技（上海）有限公司");
+  $("#Join_LeetCode").html("<a href='/jobs/lingkou/'>关于我们</a>&nbsp;|&nbsp;");
+  if(location.href.includes('/jobs/lingkou/')){
+  function findReplace(selector) {
+      if (document.querySelector(selector) == null) {
+        setTimeout(function() {
+          findReplace(selector);
+        }, 100);
+      } else {
+        document.querySelector(selector).style.display = "none";
+      }
+    }
+    findReplace('.css-1cfs9kq-CompanyInfoWrapper');
+  
+  
+  function findReplace2(selector) {
+      if (document.querySelector(selector) == null) {
+        setTimeout(function() {
+          findReplace2(selector);
+        }, 100);
+      } else {
+        document.querySelector(selector).innerHTML = "力扣信息科技（上海）有限公司 有一支年轻有为的团队，丰富的职业技术经验和创新型的公司管理模式，聚集了来自全球百强科技公司以及世界著名高校的顶尖人才。我们相信，只有这样一群专业于互联网行业之中的人，才能给我们的用户带来最佳的科技产品。<br><br>力扣（LeetCode）倡导共同创业的工作方式，提供灵活舒适的办公条件，平等自由的工作氛围，在这里你需要做的就是你自己，无须抑制你的智慧和创造能力！";
+      }
+    }
+    findReplace2('.css-1nhvfvj-Summary');
+  }
+  */
+  </script>
+  
+  
+  
+  
+  
+  <style>
+  /*
+  ul.user-dropdown .nav-user-app .user-info::after {
+    content: "new";
+    color: red;
+    display: block;
+    position: absolute;
+    top: 2px;
+    left: 17px;
+    font-size: 10px;
+  }
+  */
+  </style>
+  
+  <!-- discuss.lingkou.com -->
+  <script>
+  if (/discuss.lingkou.com/.test(location.href)) {
+    __runForLingkouDotCom()
+  }
+  
+  function __runForLingkouDotCom() {
+    // dynamic style tag
+    var style = document.createElement('style')
+    var content = 'li#discussNav { display: none; }'
+    style.type = 'text/css'
+    style.appendChild(document.createTextNode(content))
+    document.head.appendChild(style)
+  
+    // dynamic script
+    function findSocial(selector) {
+      if (document.querySelector(selector) == null) {
+        setTimeout(function() {
+          findSocial(selector);
+        }, 100);
+      } else {
+        document.querySelector(selector).style.display = "none";
+      }
+    }
+    findSocial('.side-block.discuss');
+  
+    document.querySelector('.chinese-license .gongan-beian').innerHTML = '<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31011502007802" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img class="beian" src="https://static.leetcode-cn.com/cn-legacy-assets/images/beian.png" style="float:left;"><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px;">沪公网安备31011502007802号</p></a>';
+  
+    document.querySelector('.ICP.license a').innerHTML = '<span>沪ICP备18019787号</span>';
+  }
+  </script>
+  
+  
+
+  
+  
+  
+  
+  <style>
+  #interviewed-div {
+      display: none;
+  }
+  </style>
+  <script>
+    function removeStatsObj() {
+      if (document.querySelector("#interviewed-div") == null) {
+        setTimeout(function() {
+          removeStatsObj();
+        }, 100);
+      } else {
+        $( "#interviewed-div" ).remove();
+      }
+    }
+  
+  if(document.getElementById("question-detail-app") !== null) {
+    removeStatsObj();
+  }
+  </script>
+  
+  <link href="https://assets.leetcode-cn.com/lccn-resources/lccn.css" media="screen" rel="stylesheet" type="text/css"/>
+  
+  
+  <!-- k12 洞 -->
+  <script>
+    function removeWaOutput() {
+      var styleTag = document.createElement('style')
+      document.head.appendChild(styleTag)
+      styleTag.sheet.insertRule('#wa_output { display: none; }')
+      styleTag.sheet.insertRule('#more-details { display: none; }')
+    }
+  
+    if (window.location.href.search('k12-') >= 0) {
+      removeWaOutput()
+    }
+  </script>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script>
+  function insertSideBar(selector) {
+    if (document.querySelector(selector) == null) {
+      setTimeout(function() {
+        insertSideBar(selector);
+      }, 100);
+    } else {
+  
+      console.log("Found!");
+      var newSideElem = document.createElement('div');
+      newSideElem.innerHTML = `
+  <style>
+  #legal-copyright-info {
+    margin-top: 10px;
+    font-size: 12px;
+    color: grey;
+  }
+  
+  #legal-copyright-info a {
+    color: grey;
+  }
+  </style>
+  <div style="text-align: left; margin-top: 50px; margin-left: 20px;" class="hide">
+  <a href="/about" target="_blank"><img src="https://assets.leetcode-cn.com/lccn-resources/leetcode-200x133.jpg" width="90"/></a>
+  <div id="legal-copyright-info">
+  © 2019 力扣&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://tsm.miit.gov.cn/dxxzsp/" target="_blank">沪B2-20180578</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://www.shjbzx.cn/" target="_blank">上海市互联网违法和不良信息举报中心</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="http://report.12377.cn:13225/toreportinputNormal_anis.do" target="_blank">中国互联网违法和不良信息举报中心</a>
+  </div>
+  </div>
+  `;
+      document.querySelector(selector).appendChild(newSideElem);
+    }
+  }
+  
+  insertSideBar(".side-bar .problem-category");
+  </script>
+
+  
+  <script>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?2dffe68ece6721ae7c687d98926f7c17":"https://jspassport.ssl.qhimg.com/11.0.1.js?2dffe68ece6721ae7c687d98926f7c17";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+  </script>
+
+
+
+
+<!--
+<script>
+if(window.location.href.includes("2021-spring/problems/Db3wC1")) {
+
+  var lccup21SpringQ4 = document.createElement("div");
+lccup21SpringQ4.innerHTML = `
+<style>
+.question-content.default-content::after {
+  content: "注意：本题 Java 用户如遇到编译错误问题，可以点击编辑器右上方「还原到默认的代码模版」（倒数第二个按钮）";
+  font-weight: 500;
+  font-size: 15px;
+  color: red;
+ background: rgba(255, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 16px;
+  display: block;
+  margin-bottom: 20px;
+  border: 1px solid red;
+}
+</style>
+  `;
+  var htmlHead = document.querySelector("head");
+  htmlHead.appendChild(lccup21SpringQ4);
+}
+</script>
+-->
+
+
+
+<style>
+[class*="StyledIconPlayground"] ~ [class*="NewTag"] {
+  transform: scale(0.6) translateY(-3px);
+  background: #1484ff;
+}
+</style>
+
+  <!--@START: New Feature Tag -->
+<style>
+#new-ft img {
+  width: 48px;
+}
+#new-ft {
+  transition: all 0.2s;
+  cursor: pointer;
+  position: absolute;
+  z-index: 800;
+  top: -10px;
+  right: 400px;
+}
+#new-ft:hover {
+  top: -5px;
+}
+@media (max-width: 767px) {
+  #new-ft {
+    right: 60px;
+  }
+}
+[class*="NavWrapper"] [class*="NavContainer"]{
+  position: relative;
+}
+</style>
+<!--@END: New Feature Tag -->
+
+<!--@start lc-vscode 竞赛合作 -->
+<script>
+
+if (/contest\/$/.test(location.href)) {
+    var cnt = 0
+    function changeLcvscodeNode() {
+      if (cnt > 3) {
+        return
+      }
+      cnt++
+      var element
+      for (const node of document.querySelectorAll('.title')) {
+        if (node.innerText === '「微爱思扣 以 Code 会友」专场竞赛') {
+          element = node
+        }
+      }
+      if(element) {
+        element.style.maxWidth = '130px'
+      } else {
+        setTimeout(()=>{
+          changeLcvscodeNode()
+        }, 100)
+      }
+    }
+    changeLcvscodeNode()
+  }
+
+  if (/contest\/lc-vscode\/ranking/.test(location.href)) {
+    if (new Date() < new Date('2021/06/19 16:40 +0800')) {
+      __renderLcVscodeAd()
+    }
+  }
+
+  function __renderLcVscodeAd() {
+    var container = document.createElement('div')
+    container.innerHTML = `
+      <a href="https://datayi.cn/w/WoM3eLBR" target="_blank">
+      <img src='https://assets.leetcode-cn.com/contest/lc-vscode/lc-vscode.png' width="100%" />
+      </a>      
+`
+    function render() {
+      var parent = document.querySelector('.contest-base .container')
+      if (!parent) {
+        setTimeout(()=>{
+          render()
+        }, 100)
+      } else{
+        parent.appendChild(container)
+      }
+    }
+    render()
+  }
+</script>
+<!--@end lc-vscode 竞赛合作 -->
+    
+
+    
+      <script charset="utf-8" src="//g.alicdn.com/sd/ncpc/nc.js?t=202203031756" type="text/javascript"></script>
+      <script charset="utf-8" src="//g.alicdn.com/sd/nch5/index.js?t=202203031756" type="text/javascript"></script>
+    
+  
+
+</body>
