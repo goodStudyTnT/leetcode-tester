@@ -1,7 +1,6 @@
 import datetime
-from typing import List
-from model import Problem
 import webbrowser
+from typing import List
 
 
 def get_weekly_contest_id(contest_id=0):
@@ -34,10 +33,43 @@ def get_biweekly_contest_tag(contest_id=0):
     return f"biweekly-contest-{str(get_biweekly_contest_id(contest_id))}"
 
 
-def open_page(problems: List[Problem]):
-    for p in problems:
-        if p.openURL:
-            webbrowser.open(p.url)
+def open_page(url):
+    webbrowser.open(url)
+
+
+def find_non_ASCII(s):
+    for i in s:
+        if 0 <= ord(i) <= 127:
+            continue
+        else:
+            return i
+    return -1
+
+
+def parse_return_type(line):
+    i = line.find(")")
+    print("lll", line)
+    return line[i + 1: len(line) - 2].strip()
+
+
+def modify_default_code(code: str, func_los: List[int], func_list: List,
+                        custom_func_content: str):
+    sep = "\n"
+    if "\r" in code:
+        sep = "\r\n"
+    print(code)
+
+    lines = code.split(sep)
+    for lo in func_los:
+        tp = parse_return_type(lines[lo])
+        if tp == "int64":
+            custom_func_content = "\tans := 0\n" + custom_func_content + " int64(ans)"
+            lines[lo + 1] = custom_func_content
+        for f in func_list:
+            lines[lo] = f(lines[lo])
+
+    res = sep.join(lines)
+    print(res)
 
 
 if __name__ == "__main__":
