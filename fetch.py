@@ -7,13 +7,15 @@ from dacite import from_dict
 import requests
 from requests import Session
 from utils import get_weekly_contest_tag, open_page
-from model import ContestAPIResponse, Problem
+from model.contest import ContestAPIResponse
+from model.problem import Problem
 from typing import List
 from utils import modify_default_code
 
 host = "leetcode-cn.com"
 
 
+# 使用用户名和密码登录
 def login(username, password):
     ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"
     s = requests.Session()
@@ -47,9 +49,12 @@ def login(username, password):
         "origin": f"https://{host}",
         "referer": f"https://{host}/"
     })
-    print(resp.cookies)
     if not resp.ok:
         raise Exception(f"POST {login_url} return code {resp.status_code}")
+
+    if s.cookies.get("LEETCODE_SESSION") is None:
+        raise Exception("登录失败：账号或密码错误")
+
     return s
 
 
