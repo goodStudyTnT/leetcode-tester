@@ -1,5 +1,6 @@
 # coding: utf-8
 import json
+import shutil
 import os
 from dataclasses import dataclass, field
 from typing import List
@@ -8,6 +9,7 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag, NavigableString
 from dacite import from_dict
 from helper.utils import find_non_ASCII
+from string import Template
 
 
 @dataclass
@@ -35,11 +37,11 @@ class Problem(object):
 
     default_code: str = ""
     is_func_problem: bool = True
+    class_name: str = ""
     functions: List[Function] = field(default_factory=lambda: [])
     sample_ins: List[List[str]] = field(default_factory=lambda: [])
     sample_outs: List[List[str]] = field(default_factory=lambda: [])
 
-    contest_dir: str = ""
 
     @classmethod
     def have_children(cls, o):
@@ -50,17 +52,83 @@ class Problem(object):
             return False
 
     def write_main_file(self):
-        file_location = f"{self.contest_dir}/{self.contest_id}/{self.id}/main.cpp"
+        file_location = f"{self.contest_dir}/{self.contest_id}/{self.id}/solution.h"
+
+        d = {
+            "custom_comment": "test",
+            "problem": self.default_code
+        }
+
+        with open("./template/cpp/solve.h", "r") as f:
+            src = Template(f.read())
+            result = src.substitute(d)
+
+        with open(file_location, "w") as f:
+            f.writelines(result)
+
         
 
+    def build_test(self):
+        res = {}
+        test_num = len(self.sample_ins)
+        res["test_num"] = test_num
+
+        if self.is_func_problem:
+            # 是函数 则在最开始的时候就实例化一个类
+            # 一般来说只有一个函数
+            f = self.functions[0]
+            res["begin"] = f"{self.class_name} sol = {self.class_name}()"
+            test = []
+            params = []
+            for idx, input in enumerate(self.sample_ins):
+                for input_param in f.input_params:
+                    tmp = input_param.split(" ")
+                    params.append(tmp[-1])
+                input = self.convert_input(input_param, input)
+                test.append(f"{input_param} = {input};")
+                test_input = ", ".join(params)
+                test.append(f"{f.output_params} result = sol.{f.name}({test_input});")
+                test.append(f"cout << (result == {self.sample_outs[idx]}) << endl;")
+        else:
+            # 不是函数，则不需要
+            res["begin"] = ""
+
+
+        return res
+
+
+
+
+
+
     def write_test_file(self):
-        pass
+        file_location = f"{self.contest_dir}/{self.contest_id}/{self.id}/main.cpp"
+        d = self.build_test()
+
+        with open("./template/cpp/main.cpp", "r") as f:
+            src = Template(f.read())
+            result = src.substitute(d)
+
+        with open(file_location, "w") as f:
+            f.writelines(result)
+
 
     def create_dir(self):
         try:
             os.makedirs(f"{self.contest_dir}/{self.contest_id}/{self.id}")
         except:
-            return
+            pass
+        try:
+            os.makedirs(f"{self.contest_dir}/utils/cpp")
+        except:
+            pass
+        try:
+            shutil.copyfile("./template/cpp/help.h", f"{self.contest_dir}/utils/cpp/help.h")
+        except:
+            pass
+
+
+
 
     def write_to_file(self, content):
         with open("./b", "w") as f:
@@ -124,7 +192,7 @@ class Problem(object):
                     f.input_params.append(w)
                 functions.append(f)
         print(functions)
-        return is_func_problem, functions
+        return class_name, is_func_problem, functions
 
     def parse_sample_text(self, text: str, parse_args: bool):
         text = text.strip()
@@ -262,11 +330,11 @@ class Problem(object):
                     for code_definition in all_code_definition:
                         cd = from_dict(CodeDefinition, code_definition)
                         if cd.value == "golang":
-                            self.default_code = cd.defaultCode.strip()
+                            # self.default_code = cd.defaultCode.strip()
                             pass
                         elif cd.value == "cpp":
                             self.default_code = cd.defaultCode.strip()
-                            self.is_func_problem, self.functions = self.parse_cpp_code(
+                            self.class_name, self.is_func_problem, self.functions = self.parse_cpp_code(
                                 self.default_code)
             o = o.next_sibling
 
@@ -278,6 +346,7 @@ class Problem(object):
         if len(self.sample_ins) == 0:
             # 没找到 <pre> 国服特殊比赛(春秋赛等)
             self.parse_special_node(body_node)
+        print(self.sample_ins, self.sample_outs)
 
         if len(self.sample_ins) != len(self.sample_outs):
             raise Exception(
