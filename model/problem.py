@@ -6,7 +6,7 @@ from requests import Session
 from bs4 import BeautifulSoup
 from bs4.element import Tag, NavigableString
 from dacite import from_dict
-from utils import find_non_ASCII
+from helper.utils import find_non_ASCII
 
 
 @dataclass
