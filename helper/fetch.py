@@ -6,6 +6,7 @@ import requests
 from requests import Session
 from model.contest import ContestAPIResponse
 from model.problem import Problem
+from helper.utils import get_weekly_contest_tag
 
 host = "leetcode-cn.com"
 
@@ -53,7 +54,8 @@ def login(username, password):
     return s
 
 
-def fetch_problem_urls(session: Session, contest_tag):
+def fetch_problem_urls(session: Session, contest_id, contest_dir):
+    contest_tag = get_weekly_contest_tag(contest_id)
     contest_info_url = f"https://{host}/contest/api/info/{contest_tag}"
     resp = session.get(contest_info_url)
     if not resp.ok:
@@ -88,5 +90,6 @@ def fetch_problem_urls(session: Session, contest_tag):
     for idx, q in enumerate(d.questions):
         problems.append(Problem(id=str(idx),
                                 url=f"https://{host}/contest/{contest_tag}/problems/{q.title_slug}/",
-                                is_func_problem=True))
+                                contest_id=contest_id,
+                                contest_dir=contest_dir))
     return problems

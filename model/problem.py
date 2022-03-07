@@ -1,5 +1,6 @@
 # coding: utf-8
 import json
+import os
 from dataclasses import dataclass, field
 from typing import List
 from requests import Session
@@ -16,17 +17,25 @@ class CodeDefinition(object):
 
 
 @dataclass
+class Function(object):
+    name: str = ""
+    location: int = 0
+    is_constructor: bool = True  # 是否是构造函数
+    output_params: str = ""  # 出参
+    input_params: List[str] = field(default_factory=lambda: [])  # 入参
+
+
+@dataclass
 class Problem(object):
     id: str = ""
     url: str = ""
+    contest_dir: str = ""
+    contest_id: int = 0
     openURL: bool = False
 
     default_code: str = ""
-    func_name: str = ""
-    is_func_problem: bool = True  # 是否是函数, 默认是函数 函数和方法的区别： 函数的定义没有接受者，方法的定义有一个接受者
-    func_los: List[int] = field(default_factory=lambda: [])
-    custom_comment: str = ""
-
+    is_func_problem: bool = True
+    functions: List[Function] = field(default_factory=lambda: [])
     sample_ins: List[List[str]] = field(default_factory=lambda: [])
     sample_outs: List[List[str]] = field(default_factory=lambda: [])
 
@@ -39,6 +48,19 @@ class Problem(object):
             return True
         except:
             return False
+
+    def write_main_file(self):
+        file_location = f"{self.contest_dir}/{self.contest_id}/{self.id}/main.cpp"
+        
+
+    def write_test_file(self):
+        pass
+
+    def create_dir(self):
+        try:
+            os.makedirs(f"{self.contest_dir}/{self.contest_id}/{self.id}")
+        except:
+            return
 
     def write_to_file(self, content):
         with open("./b", "w") as f:
@@ -67,10 +89,42 @@ class Problem(object):
                     return line[5:i].strip(), True, [lo]
 
     def parse_cpp_code(self, code):
+        print(code)
         lines = code.split("\n")
-
-
-
+        # get class name
+        class_name = ""
+        for l in lines:
+            i = l.find("class")
+            if i != -1:
+                class_name = l[6:-2]
+                break
+        print(class_name)
+        functions = list()
+        is_func_problem = True
+        for lo, line in enumerate(lines):
+            if "{" in line and "struct" not in line and "class" not in line and \
+                    line[1] != "*":
+                f = Function()
+                i = line.find("(")
+                left = line[:i]
+                right = line[i + 1:]
+                left_words = left.split(" ")
+                f.name = left_words[-1].strip()
+                f.is_constructor = (f.name == class_name)
+                if f.is_constructor:
+                    is_func_problem = False
+                f.location = lo
+                name_len = len(f.name)
+                f.output_params = left[:-name_len - 1].strip()
+                i = right.find(")")
+                right = right[:i]
+                right_words = right.split(",")
+                for w in right_words:
+                    w = w.strip()
+                    f.input_params.append(w)
+                functions.append(f)
+        print(functions)
+        return is_func_problem, functions
 
     def parse_sample_text(self, text: str, parse_args: bool):
         text = text.strip()
@@ -97,13 +151,12 @@ class Problem(object):
 
         # TODO: 处理参数本身含有 = 的情况
         splits = text.split("=")
+        print(splits)
         sample = []
         for s in splits[1: len(splits) - 1]:
             end = s.rfind(",")
             sample.append(s[:end].strip())
         sample.append(splits[len(splits) - 1].strip())
-        if not self.is_func_problem:
-            sample = ["\n".join(sample) + "\n"]
         return sample
 
     def parse_node(self, o: Tag):
@@ -210,10 +263,11 @@ class Problem(object):
                         cd = from_dict(CodeDefinition, code_definition)
                         if cd.value == "golang":
                             self.default_code = cd.defaultCode.strip()
-                            self.func_name, self.is_func_problem, self.func_los = self.parse_golang_code(
-                                self.default_code)
+                            pass
                         elif cd.value == "cpp":
-                            print(cd.defaultCode)
+                            self.default_code = cd.defaultCode.strip()
+                            self.is_func_problem, self.functions = self.parse_cpp_code(
+                                self.default_code)
             o = o.next_sibling
 
         if self.default_code == "":

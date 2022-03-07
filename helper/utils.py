@@ -51,17 +51,19 @@ def parse_return_type(line):
     return line[i + 1: len(line) - 2].strip()
 
 
-def modify_default_code(code: str, func_los: List[int], func_list: List,
-                        custom_func_content: str):
+def modify_default_code(code: str, functions: List, func_list: List):
+    return code
+    from model.problem import Function
+    func_los: List[Function]
     sep = "\n"
     if "\r" in code:
         sep = "\r\n"
 
     lines = code.split(sep)
-    for lo in func_los:
+    for f in functions:
         tp = parse_return_type(lines[lo])
         if tp == "int64":
-            custom_func_content = "\tans := 0\n" + custom_func_content + " int64(ans)"
+            custom_func_content = "\tans := 0\n" + "return int64(ans)"
             lines[lo + 1] = custom_func_content
         for f in func_list:
             lines[lo] = f(lines[lo])
