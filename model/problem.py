@@ -23,7 +23,7 @@ class Problem(object):
 
     default_code: str = ""
     func_name: str = ""
-    is_func_problem: bool = False
+    is_func_problem: bool = True  # 是否是函数, 默认是函数 函数和方法的区别： 函数的定义没有接受者，方法的定义有一个接受者
     func_los: List[int] = field(default_factory=lambda: [])
     custom_comment: str = ""
 
@@ -65,6 +65,12 @@ class Problem(object):
                 if line.startswith("func "):
                     i = line.find("(")
                     return line[5:i].strip(), True, [lo]
+
+    def parse_cpp_code(self, code):
+        lines = code.split("\n")
+
+
+
 
     def parse_sample_text(self, text: str, parse_args: bool):
         text = text.strip()
@@ -200,13 +206,14 @@ class Problem(object):
                     json_text = json_text[:len(json_text) - 3] + "]"
                     json_text = json_text.replace("'", '"', -1)
                     all_code_definition = json.loads(json_text)
-                    print(all_code_definition)
                     for code_definition in all_code_definition:
                         cd = from_dict(CodeDefinition, code_definition)
                         if cd.value == "golang":
                             self.default_code = cd.defaultCode.strip()
                             self.func_name, self.is_func_problem, self.func_los = self.parse_golang_code(
                                 self.default_code)
+                        elif cd.value == "cpp":
+                            print(cd.defaultCode)
             o = o.next_sibling
 
         if self.default_code == "":

@@ -48,7 +48,6 @@ def find_non_ASCII(s):
 
 def parse_return_type(line):
     i = line.find(")")
-    print("lll", line)
     return line[i + 1: len(line) - 2].strip()
 
 
@@ -57,7 +56,6 @@ def modify_default_code(code: str, func_los: List[int], func_list: List,
     sep = "\n"
     if "\r" in code:
         sep = "\r\n"
-    print(code)
 
     lines = code.split(sep)
     for lo in func_los:
