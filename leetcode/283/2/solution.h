@@ -13,8 +13,8 @@
  * };
  */
 class Solution {
-public:
+   public:
     TreeNode* createBinaryTree(vector<vector<int>>& descriptions) {
-        
+        return NULL;
     }
 };

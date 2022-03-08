@@ -70,6 +70,40 @@ class Problem(object):
         input = input.replace("'", "")
         input = input.replace("[", "{")
         input = input.replace("]", "}")
+        input = input.replace("null", "NULL")
+
+        print(input_type, input)
+
+        # 特判 TreeNode* + ListNode*
+        if "TreeNode" in input_type or "ListNode" in input_type:
+            keyword = "TreeNode" if "TreeNode" in input_type else "ListNode"
+            # 找到包围数字的 { }
+            # 有可能是 vector<vector<TreeNode*>> -》 {{{1, 2, 3}, {4, 5, 6}}, {{9, 9, 9}, {8, 9, 10}}}
+            brackets = []
+            need_update = []
+            for idx, c in enumerate(input):
+                if c == '{':
+                    brackets.append((idx, c))
+                elif c == '}':
+                    if brackets[-1][1] == '{': # 是包围的
+                        left_idx = brackets[-1][0]
+                        need_update.append((left_idx, idx))
+                    brackets.append((idx, c))
+
+            update_idx = 0
+            real_input = ""
+            for idx, c in enumerate(input):
+                if update_idx < len(need_update):
+                    if idx == need_update[update_idx][0]:
+                        real_input += f"new {keyword}(" + c
+                    elif idx == need_update[update_idx][1]:
+                        real_input += f"{c})"
+                        update_idx += 1
+                    else:
+                        real_input += c
+                else:
+                    real_input += c
+            input = real_input
         return input
 
     def build_params(self, input_type, input_name, input_val):
