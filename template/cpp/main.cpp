@@ -1,10 +1,9 @@
 #include "./solution.h"
 
-
 int main() {
-
-    $begin
+$begin
     for (int i = 0; i < $test_num; i++) {
-        $test
+$test
     }
+    return 0;
 }

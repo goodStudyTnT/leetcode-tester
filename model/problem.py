@@ -66,11 +66,18 @@ class Problem(object):
             f.writelines(result)
 
     def convert_input_for_cpp(self, input_type, input):
-        input = input[1:-1]  # 去掉 ‘’
-        input: str
+        input = str(input)
+        print("zzzz", input_type, input)
+        input = input.replace("'", "")
         input = input.replace("[", "{")
         input = input.replace("]", "}")
         return input
+
+    def build_params(self, input_type, input_name, input_val):
+        number = len(input_val)
+        input_val = self.convert_input_for_cpp(input_type, input_val)
+        res = f"{input_type} {input_name}[{number}] = {input_val};"
+        return res
 
     def build_test(self):
         res = {}
@@ -82,31 +89,29 @@ class Problem(object):
             # todo: 待验证
             f = self.functions[0]
             begin = [f"{self.class_name} sol = {self.class_name}();"]
-            result = []
-            result_str = ", ".join(result)
-            begin.append(f"{f.output_params} res[{test_num}] = {{result_str}}")
-            names = []
-
+            result_str = self.build_params(f.output_params, "res",
+                                           self.sample_outs)
+            begin.append(result_str)
+            # 得到所有参数的 name 和 type
+            input_names = []
             for idx, input_param in enumerate(f.input_params):
-                input = input_param.split(" ")
-                input_type = input[0]
-                input_name = input[1]
-                names.append(f"{input_name}[i]")
-                val = []
-                for idx2, sample_in in enumerate(self.sample_ins):
-                    sample_in = sample_in[idx]
-                    sample_in = self.convert_input_for_cpp(input_type,
-                                                           sample_in)
-                    val.append(sample_in)
-                real_val = ",".join(val)
-                w = f"{input_param}[{test_num}]={real_val}"
-                begin.append(w)
-            begin_str = "\n".join(begin)
+                tmp = input_param.split(" ")
+                input_type = tmp[0]
+                input_name = tmp[1]
+                input_names.append(f"{input_name}[i]")
+                vals = [val[idx] for val in self.sample_ins]
+                result_str = self.build_params(input_type, input_name, vals)
+                begin.append(result_str)
 
-            names_str = ", ".join(names)
+            # 构造 for 循环里的内容
             test = []
-            test.append(f"{f.output_params} res = sol.{f.name}({names_str});")
-            test.append(f"cout << (res == {self.sample_outs}[i]) << endl;")
+            input_names_str = ", ".join(input_names)
+            test.append(
+                f"{f.output_params} my_ans = sol.{f.name}({input_names_str});")
+            test.append(f"compare_result(my_ans, res[i]);")
+            begin = [f"\t{val}" for val in begin]
+            begin_str = "\n".join(begin)
+            test = [f"\t\t{val}" for val in test]
             test_str = "\n".join(test)
             res["begin"] = begin_str
             res["test"] = test_str
@@ -225,7 +230,7 @@ class Problem(object):
 
         # 不含等号，说明只有一个参数
         if not parse_args or "=" not in text:
-            return [text]
+            return text
 
         # TODO: 处理参数本身含有 = 的情况
         splits = text.split("=")
@@ -281,6 +286,7 @@ class Problem(object):
                         self.parse_sample_text(raw_data[:i], True))
 
                     raw_data = raw_data[i + 3:]  # 去掉 输出：
+                    print("llllllll", raw_data)
                     self.sample_outs.append(
                         self.parse_sample_text(raw_data, True))
 
