@@ -22,6 +22,8 @@ def handle_one_problem(session: Session, p: Problem):
 
     p.write_main_file()
 
+    p.write_test_file()
+
 
 def handle_problems(session: Session, problems: List[Problem]):
     # Open Page

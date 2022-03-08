@@ -42,7 +42,6 @@ class Problem(object):
     sample_ins: List[List[str]] = field(default_factory=lambda: [])
     sample_outs: List[List[str]] = field(default_factory=lambda: [])
 
-
     @classmethod
     def have_children(cls, o):
         try:
@@ -66,40 +65,54 @@ class Problem(object):
         with open(file_location, "w") as f:
             f.writelines(result)
 
-        
+    def convert_input_for_cpp(self, input_type, input):
+        input = input[1:-1]  # 去掉 ‘’
+        input: str
+        input = input.replace("[", "{")
+        input = input.replace("]", "}")
+        return input
 
     def build_test(self):
         res = {}
         test_num = len(self.sample_ins)
         res["test_num"] = test_num
-
         if self.is_func_problem:
             # 是函数 则在最开始的时候就实例化一个类
             # 一般来说只有一个函数
+            # todo: 待验证
             f = self.functions[0]
-            res["begin"] = f"{self.class_name} sol = {self.class_name}()"
+            begin = [f"{self.class_name} sol = {self.class_name}();"]
+            result = []
+            result_str = ", ".join(result)
+            begin.append(f"{f.output_params} res[{test_num}] = {{result_str}}")
+            names = []
+
+            for idx, input_param in enumerate(f.input_params):
+                input = input_param.split(" ")
+                input_type = input[0]
+                input_name = input[1]
+                names.append(f"{input_name}[i]")
+                val = []
+                for idx2, sample_in in enumerate(self.sample_ins):
+                    sample_in = sample_in[idx]
+                    sample_in = self.convert_input_for_cpp(input_type,
+                                                           sample_in)
+                    val.append(sample_in)
+                real_val = ",".join(val)
+                w = f"{input_param}[{test_num}]={real_val}"
+                begin.append(w)
+            begin_str = "\n".join(begin)
+
+            names_str = ", ".join(names)
             test = []
-            params = []
-            for idx, input in enumerate(self.sample_ins):
-                for input_param in f.input_params:
-                    tmp = input_param.split(" ")
-                    params.append(tmp[-1])
-                input = self.convert_input(input_param, input)
-                test.append(f"{input_param} = {input};")
-                test_input = ", ".join(params)
-                test.append(f"{f.output_params} result = sol.{f.name}({test_input});")
-                test.append(f"cout << (result == {self.sample_outs[idx]}) << endl;")
+            test.append(f"{f.output_params} res = sol.{f.name}({names_str});")
+            test.append(f"cout << (res == {self.sample_outs}[i]) << endl;")
+            test_str = "\n".join(test)
+            res["begin"] = begin_str
+            res["test"] = test_str
         else:
-            # 不是函数，则不需要
-            res["begin"] = ""
-
-
+            pass
         return res
-
-
-
-
-
 
     def write_test_file(self):
         file_location = f"{self.contest_dir}/{self.contest_id}/{self.id}/main.cpp"
@@ -112,7 +125,6 @@ class Problem(object):
         with open(file_location, "w") as f:
             f.writelines(result)
 
-
     def create_dir(self):
         try:
             os.makedirs(f"{self.contest_dir}/{self.contest_id}/{self.id}")
@@ -123,12 +135,10 @@ class Problem(object):
         except:
             pass
         try:
-            shutil.copyfile("./template/cpp/help.h", f"{self.contest_dir}/utils/cpp/help.h")
+            shutil.copyfile("./template/cpp/help.h",
+                            f"{self.contest_dir}/utils/cpp/help.h")
         except:
             pass
-
-
-
 
     def write_to_file(self, content):
         with open("./b", "w") as f:
