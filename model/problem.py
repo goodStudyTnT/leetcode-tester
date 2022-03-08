@@ -67,7 +67,6 @@ class Problem(object):
 
     def convert_input_for_cpp(self, input_type, input):
         input = str(input)
-        print("zzzz", input_type, input)
         input = input.replace("'", "")
         input = input.replace("[", "{")
         input = input.replace("]", "}")
@@ -76,6 +75,9 @@ class Problem(object):
     def build_params(self, input_type, input_name, input_val):
         number = len(input_val)
         input_val = self.convert_input_for_cpp(input_type, input_val)
+
+        # 去掉引用符号
+        input_type = input_type.replace("&", "")
         res = f"{input_type} {input_name}[{number}] = {input_val};"
         return res
 
