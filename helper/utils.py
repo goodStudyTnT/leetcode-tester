@@ -70,3 +70,11 @@ def modify_default_code(code: str, functions: List, func_list: List):
 
     res = sep.join(lines)
     print(res)
+
+
+def get_first_children(o):
+    try:
+        c = next(o.children)
+        return c
+    except:
+        return None

@@ -8,7 +8,7 @@ from requests import Session
 from bs4 import BeautifulSoup
 from bs4.element import Tag, NavigableString
 from dacite import from_dict
-from helper.utils import find_non_ASCII
+from helper.utils import find_non_ASCII, get_first_children
 from string import Template
 
 
@@ -41,14 +41,6 @@ class Problem(object):
     functions: List[Function] = field(default_factory=lambda: [])
     sample_ins: List[List[str]] = field(default_factory=lambda: [])
     sample_outs: List[List[str]] = field(default_factory=lambda: [])
-
-    @classmethod
-    def have_children(cls, o):
-        try:
-            _ = next(o.children)
-            return True
-        except:
-            return False
 
     def write_main_file(self):
         file_location = f"{self.contest_dir}/{self.contest_id}/{self.id}/solution.h"
@@ -289,9 +281,8 @@ class Problem(object):
         #     <img> https://leetcode-cn.com/contest/weekly-contest-103/problems/snakes-and-ladders/
         #     <b> https://leetcode-cn.com/contest/weekly-contest-210/problems/split-two-strings-to-make-palindrome/
         # 提取出文本后，去掉「解释」和「提示」后面的文字，然后分「输入」和「输出」来解析后面的数据
-        if o.name == "pre" and self.have_children(o):
-            children_iter = o.children
-            first_child = next(children_iter)
+        first_child = get_first_children(o)
+        if o.name == "pre" and first_child:
             if first_child.name != "img" and first_child.name != "image":
                 data = first_child.string
                 data = data.strip()
@@ -301,12 +292,10 @@ class Problem(object):
                     def parse_pre_node(o: Tag):
                         if o.name is None:
                             raw_data.append(str(o.string))
-                        if self.have_children(o):
-                            children_iter = o.children
-                            c = next(children_iter)
-                            while c is not None:
-                                parse_pre_node(c)
-                                c = c.next_sibling
+                        c = get_first_children(o)
+                        while c is not None:
+                            parse_pre_node(c)
+                            c = c.next_sibling
 
                     parse_pre_node(o)
                     raw_data = "".join(raw_data)
@@ -324,16 +313,13 @@ class Problem(object):
                         self.parse_sample_text(raw_data[:i], True))
 
                     raw_data = raw_data[i + 3:]  # 去掉 输出：
-                    print("llllllll", raw_data)
                     self.sample_outs.append(
                         self.parse_sample_text(raw_data, True))
 
-        if self.have_children(o):
-            children_iter = o.children
-            c = next(children_iter)
-            while c is not None:
-                self.parse_node(c)
-                c = c.next_sibling
+        c = get_first_children(o)
+        while c is not None:
+            self.parse_node(c)
+            c = c.next_sibling
 
     def parse_special_node(self, o: Tag):
         if o.name == "div" and self.have_children(o):
@@ -367,11 +353,10 @@ class Problem(object):
         soup = BeautifulSoup(resp.content, "html5lib")
 
         body_node: Tag = soup.body
-        children_iter = body_node.children
-        o = next(children_iter)
+        o = get_first_children(body_node)
         while o is not None:
-            if o.name == "script" and self.have_children(o):
-                first_child = next(o.children)
+            first_child = get_first_children(o)
+            if o.name == "script" and first_child:
                 js_text: NavigableString = first_child.string
                 start = js_text.find("codeDefinition:")
                 if start != -1:
@@ -383,6 +368,7 @@ class Problem(object):
                     all_code_definition = json.loads(json_text)
                     for code_definition in all_code_definition:
                         cd = from_dict(CodeDefinition, code_definition)
+                        cd.defaultCode = cd.defaultCode.strip()
                         if cd.value == "golang":
                             # self.default_code = cd.defaultCode.strip()
                             pass
