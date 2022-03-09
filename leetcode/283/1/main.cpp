@@ -7,7 +7,7 @@ int main() {
 	int k[2] = {2, 6};
     for (int i = 0; i < 2; i++) {
 		long long my_ans = sol.minimalKSum(nums[i], k[i]);
-		compare_result(my_ans, res[i]);
+		compare_result(i, my_ans, res[i]);
     }
     return 0;
 }

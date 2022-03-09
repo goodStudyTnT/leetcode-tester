@@ -1,5 +1,7 @@
 // test
+#if __has_include("../../utils/cpp/help.h")
 #include "../../utils/cpp/help.h"
+#endif
 
 /**
  * Definition for a binary tree node.
@@ -13,8 +15,8 @@
  * };
  */
 class Solution {
-   public:
+public:
     TreeNode* createBinaryTree(vector<vector<int>>& descriptions) {
-        return NULL;
+        
     }
 };

@@ -85,7 +85,7 @@ class Problem(object):
                 if c == '{':
                     brackets.append((idx, c))
                 elif c == '}':
-                    if brackets[-1][1] == '{': # 是包围的
+                    if brackets[-1][1] == '{':  # 是包围的
                         left_idx = brackets[-1][0]
                         need_update.append((left_idx, idx))
                     brackets.append((idx, c))
@@ -144,7 +144,7 @@ class Problem(object):
             input_names_str = ", ".join(input_names)
             test.append(
                 f"{f.output_params} my_ans = sol.{f.name}({input_names_str});")
-            test.append(f"compare_result(my_ans, res[i]);")
+            test.append(f"compare_result(i, my_ans, res[i]);")
             begin = [f"\t{val}" for val in begin]
             begin_str = "\n".join(begin)
             test = [f"\t\t{val}" for val in test]
@@ -176,8 +176,10 @@ class Problem(object):
         except:
             pass
         try:
-            shutil.copyfile("./template/cpp/help.h",
-                            f"{self.contest_dir}/utils/cpp/help.h")
+            if not os.path.exists(
+                    f"{self.contest_dir}/utils/cpp/help.h"):  # 当不存在时才 copy
+                shutil.copyfile("./template/cpp/help.h",
+                                f"{self.contest_dir}/utils/cpp/help.h")
         except:
             pass
 

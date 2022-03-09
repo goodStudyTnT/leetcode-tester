@@ -6,7 +6,7 @@ int main() {
 	string s[2] = {"K1:L2", "A1:F1"};
     for (int i = 0; i < 2; i++) {
 		vector<string> my_ans = sol.cellsInRange(s[i]);
-		compare_result(my_ans, res[i]);
+		compare_result(i, my_ans, res[i]);
     }
     return 0;
 }
