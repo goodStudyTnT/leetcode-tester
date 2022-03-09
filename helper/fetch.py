@@ -54,7 +54,7 @@ def login(username, password):
     return s
 
 
-def fetch_problem_urls(session: Session, contest_id, contest_dir):
+def fetch_problem_urls(session: Session, contest_id):
     contest_tag = get_weekly_contest_tag(contest_id)
     contest_info_url = f"https://{host}/contest/api/info/{contest_tag}"
     resp = session.get(contest_info_url)
@@ -89,7 +89,5 @@ def fetch_problem_urls(session: Session, contest_id, contest_dir):
     problems = []
     for idx, q in enumerate(d.questions):
         problems.append(Problem(id=str(idx),
-                                url=f"https://{host}/contest/{contest_tag}/problems/{q.title_slug}/",
-                                contest_id=contest_id,
-                                contest_dir=contest_dir))
+                                url=f"https://{host}/contest/{contest_tag}/problems/{q.title_slug}/"))
     return problems
