@@ -6,6 +6,7 @@ from helper.utils import find_non_ASCII
 
 
 class Parser(object):
+    contest_type = ""
 
     def __init__(self, creator: CodeCreator):
         self.creator = creator
@@ -30,7 +31,6 @@ class Parser(object):
 
         # TODO: 处理参数本身含有 = 的情况
         splits = text.split("=")
-        print(splits)
         sample = []
         for s in splits[1: len(splits) - 1]:
             end = s.rfind(",")

@@ -1,4 +1,4 @@
-from parser.parser import Parser
+from pparser.parser import Parser
 from typing import List
 from model.problem import Function
 from bs4 import Tag, NavigableString
@@ -9,6 +9,9 @@ from model.problem import CodeDefinition
 
 
 class WeeklyContestParser(Parser):
+
+    contest_type = "weekly"
+
     def get_basic_info(self, node: Tag) -> (str, str, bool, List[Function]):
         default_code = ""
         class_name = ""
@@ -56,7 +59,7 @@ class WeeklyContestParser(Parser):
         sample_outs = []
 
         def work(o):
-            first_child = get_first_children(node)
+            first_child = get_first_children(o)
             if o.name == "pre" and first_child:
                 if first_child.name != "img" and first_child.name != "image":
                     data = first_child.string

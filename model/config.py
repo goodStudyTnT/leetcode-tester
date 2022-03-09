@@ -8,4 +8,4 @@ class Config(object):
     language: str
     contest_dir: str
     contest_id: int
-    contest_type: int
+    contest_type: str

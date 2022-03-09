@@ -1,4 +1,4 @@
-from parser.parser import Parser
+from pparser.parser import Parser
 from typing import List
 from model.problem import Function
 from bs4 import Tag
@@ -8,6 +8,9 @@ from helper.utils import get_first_children
 
 # todo: 待验证
 class SeasonContestParser(Parser):
+
+    contest_type = "season"
+
     def get_basic_info(self, node: Tag) -> (str, str, bool, List[Function]):
         pass
 

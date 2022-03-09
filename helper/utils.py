@@ -1,6 +1,5 @@
 import datetime
 import webbrowser
-from typing import List
 
 
 def get_weekly_contest_id(contest_id=0):
@@ -49,27 +48,6 @@ def find_non_ASCII(s):
 def parse_return_type(line):
     i = line.find(")")
     return line[i + 1: len(line) - 2].strip()
-
-
-def modify_default_code(code: str, functions: List, func_list: List):
-    return code
-    from model.problem import Function
-    func_los: List[Function]
-    sep = "\n"
-    if "\r" in code:
-        sep = "\r\n"
-
-    lines = code.split(sep)
-    for f in functions:
-        tp = parse_return_type(lines[lo])
-        if tp == "int64":
-            custom_func_content = "\tans := 0\n" + "return int64(ans)"
-            lines[lo + 1] = custom_func_content
-        for f in func_list:
-            lines[lo] = f(lines[lo])
-
-    res = sep.join(lines)
-    print(res)
 
 
 def get_first_children(o):

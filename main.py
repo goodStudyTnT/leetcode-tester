@@ -1,5 +1,9 @@
 import shutil
 import os
+from creator import creator_factory
+from pparser import parser_factory
+import json
+import dataclasses
 import threading
 from requests import Session
 from helper.utils import open_page, \
@@ -17,69 +21,67 @@ class Handler(object):
     def __init__(self, config: Config):
         # load config
         self.config = config
-        self.parser = None
-        self.creator = None
+        self.creator = creator_factory[self.config.language]()
+        self.parser = parser_factory[self.config.contest_type](self.creator)
 
     def _parseHTML(self, session: Session, problem: Problem):
         resp = session.get(problem.url)
         if not resp.ok:
             raise Exception(f"GET {problem.url} return code {resp.status_code}")
         soup = BeautifulSoup(resp.content, "html5lib")
+        body_node = soup.body
 
         # 1. 拿到问题基本属性
         problem.default_code, problem.class_name, problem.is_func_problem, problem.functions = self.parser.get_basic_info(
-            soup.body_node)
+            body_node)
 
         # 2. 拿到输入输出
-        problem.sample_ins, problem.sample_outs = self.parser.get_sample(soup.body_node)
+        problem.sample_ins, problem.sample_outs = self.parser.get_sample(body_node)
 
-    def create_dir(self, p: Problem):
+    def _write_config(self, file_location: str, p: Problem):
+        sample_ins = p.sample_ins
+        sample_outs = p.sample_outs
+        sample_len = len(sample_ins)
+        print("lll", sample_ins, sample_outs)
+        with open(f"{file_location}/data", "w") as f:
+            for i in range(sample_len):
+                f.write(str(sample_ins[i]) + "\n")
+                f.write(str(sample_outs[i]) + "\n")
 
-        try:
-            os.makedirs(f"{self.config.contest_dir}/{self.contest_id}/{p.id}")
-        except:
-            pass
-        try:
-            os.makedirs(f"{self.config.contest_dir}/utils/cpp")
-        except:
-            pass
-        try:
-            if not os.path.exists(
-                    f"{self.config.contest_dir}/utils/cpp/help.h"):  # 当不存在时才 copy
-                shutil.copyfile("./template/cpp/help.h",
-                                f"{self.config.contest_dir}/utils/cpp/help.h")
-        except:
-            pass
 
-    def handle_one_problem(self, s: Session, p: Problem):
+        info = json.dumps(dataclasses.asdict(p))
+        with open(f"{file_location}/problem.json", "w") as f:
+            f.write(info)
+
+    def _handle_one_problem(self, s: Session, p: Problem):
         self._parseHTML(s, p)
 
-        self.create_dir(p)
+        directory_location = f"{self.config.contest_dir}/{self.contest_id}/{p.id}/"
+        self.creator.create_dir(directory_location)
+        self._write_config(directory_location, p)
+        self.creator.create_main_code(directory_location, p.default_code)
+        self.creator.create_test_code(directory_location, p)  # 需要传一个路径进去
 
-        self.write_test_file(f"{self.config.contest_dir}/{self.contest_id}/{p.id}/data", p.sample_ins, p.sample_outs)
-        self.creator.create_main_code(f"{self.config.contest_dir}/{self.contest_id}/{p.id}/solution.h", p.default_code)
-        self.creator.create_test_code(f"{self.config.contest_dir}/{self.contest_id}/{p.id}/data", p)  # 需要传一个路径进去
-
-    def open_problems_page(self, problems: List[Problem]):
+    def _open_problems_page(self, problems: List[Problem]):
         for p in problems:
             if p.openURL:
                 open_page(p.url)
 
-    def handle_problems(self, session: Session, problems: List[Problem]):
+    def _handle_problems(self, session: Session, problems: List[Problem]):
         # Open Page
-        t = threading.Thread(target=self.open_problems_page, args=(problems,))
+        t = threading.Thread(target=self._open_problems_page, args=(problems,))
         t.start()
 
         for p in problems:
             print(p.id, p.url)
-            t = threading.Thread(target=self.handle_one_problem, args=(session, p,))
+            t = threading.Thread(target=self._handle_one_problem, args=(session, p,))
             t.start()
 
     def work(self):
         s = login(self.config.username, self.config.password)
         self.contest_id = get_weekly_contest_id(self.config.contest_id)
         problems = fetch_problem_urls(s, self.contest_id)
-        self.handle_problems(s, problems)
+        self._handle_problems(s, problems)
 
 
 if __name__ == "__main__":
