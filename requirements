@@ -2,3 +2,4 @@ dacite
 requests
 beautifulsoup4
 html5lib
+PyYAML
