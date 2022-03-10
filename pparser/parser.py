@@ -11,13 +11,16 @@ class Parser(object):
     def __init__(self, creator: CodeCreator):
         self.creator = creator
 
-    def parse_sample_text(self, text: str, parse_args: bool):
+    def parse_sample_text(self, text: str, parse_args: bool, is_func_problem: bool):
         text = text.strip()
         if text == "":
             return []
         lines = text.split("\n")
         for i, s in enumerate(lines):
             lines[i] = s.strip()
+
+        if not is_func_problem:
+            return lines
 
         text = "".join(lines)
         idx = find_non_ASCII(text)
@@ -27,7 +30,7 @@ class Parser(object):
 
         # 不含等号，说明只有一个参数
         if not parse_args or "=" not in text:
-            return text
+            return [text]
 
         # TODO: 处理参数本身含有 = 的情况
         splits = text.split("=")
@@ -46,10 +49,11 @@ class Parser(object):
         Tuple(default_code, class_name, is_func_problem, functions)
         """
 
-    def get_sample(self, node: Tag) -> (List[List[str]], List[List[str]]):
+    def get_sample(self, node: Tag, is_func_problem: bool) -> (List[List[str]], List[List[str]]):
         """
         Get problem's sample inputs and outputs by parse HTML
         :param node: body node
+        :param is_func_problem: is func problem
         :return:
         Tuple(sample_ins, sample_outs)
         """

@@ -9,17 +9,18 @@ class CppCreator(CodeCreator):
     code_type = "cpp"
 
     def create_dir(self, dir_loc):
+        print(dir_loc)
         try:
             os.makedirs(dir_loc)
         except:
             pass
         try:
-            os.makedirs(f"{dir_loc}/utils/cpp")
+            os.makedirs(f"{dir_loc}/../../utils/cpp")
         except:
             pass
         try:
-            if not os.path.exists(f"{dir_loc}/utils/cpp/help.h"):  # 当不存在时才 copy
-                shutil.copyfile("./template/cpp/help.h", f"{dir_loc}/utils/cpp/help.h")
+            if not os.path.exists(f"{dir_loc}/../../utils/cpp/help.h"):  # 当不存在时才 copy
+                shutil.copyfile("./template/cpp/help.h", f"{dir_loc}/../../utils/cpp/help.h")
         except:
             pass
 
@@ -130,8 +131,9 @@ class CppCreator(CodeCreator):
             # todo: 待验证
             f = p.functions[0]
             begin = [f"{p.class_name} sol = {p.class_name}();"]
+            vals = [val[0] for val in sample_outs]
             result_str = self._build_params(f.output_params, "res",
-                                            sample_outs)
+                                            vals)
             begin.append(result_str)
             # 得到所有参数的 name 和 type
             input_names = []
@@ -165,19 +167,34 @@ class CppCreator(CodeCreator):
         data_location = f"{dir_loc}/data"
         sample_ins = []
         sample_outs = []
+
+        sample_in_len = len(p.functions[0].input_params)
+        sample_out_len = 1
+
         with open(data_location, "r") as f:
             lines = f.read().splitlines()
             # lines = f.readlines()
-            idx = 0
-            for line in lines:
-                line = line.rstrip()
-                if line == "\n" or line == "":
-                    continue
-                if idx % 2 == 0:
-                    sample_ins.append(line)
-                else:
-                    sample_outs.append(line)
-                idx += 1
+            now = 0
+            while now < len(lines):
+                go = now
+                ins = []
+                outs = []
+                while go < len(lines) and len(ins) < sample_in_len:
+                    if lines[go] != "\n" and lines[go] != "":
+                        ins.append(lines[go])
+                    go += 1
+                while go < len(lines) and len(outs) < sample_out_len:
+                    if lines[go] != '\n' and lines[go] != "":
+                        outs.append(lines[go])
+                    go += 1
+                print(ins, outs)
+                if len(ins) != sample_in_len or len(outs) != sample_out_len:
+                    raise Exception("样例 data 错误，请检查！")
+
+                sample_ins.append(ins)
+                sample_outs.append(outs)
+                now = go
+
         print("ttt", sample_ins, sample_outs)
         file_location = f"{dir_loc}/main.cpp"
         d = self._build_test(sample_ins, sample_outs, p)

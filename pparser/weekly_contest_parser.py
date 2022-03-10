@@ -46,7 +46,7 @@ class WeeklyContestParser(Parser):
         return default_code, class_name, is_func_problem, functions
 
 
-    def get_sample(self, node: Tag) -> (List[List[str]], List[List[str]]):
+    def get_sample(self, node: Tag, is_func_problem: bool) -> (List[List[str]], List[List[str]]):
         # 提取并解析每个 <pre> 块内的文本（以中文为基准解析）
         # 需要判断 <pre> 的下一个子元素是否为 tag
         #     https://leetcode-cn.com/contest/weekly-contest-190/problems/max-dot-product-of-two-subsequences/
@@ -87,10 +87,10 @@ class WeeklyContestParser(Parser):
                         raw_data = raw_data.strip()
                         raw_data = raw_data[3:]  # 去掉 输入：
                         i = raw_data.find("输")
-                        sample_ins.append(self.parse_sample_text(raw_data[:i], True))
+                        sample_ins.append(self.parse_sample_text(raw_data[:i], True, is_func_problem))
 
                         raw_data = raw_data[i + 3:]  # 去掉 输出：
-                        sample_outs.append(self.parse_sample_text(raw_data, True))
+                        sample_outs.append(self.parse_sample_text(raw_data, True, is_func_problem))
 
             c = get_first_children(o)
             while c is not None:

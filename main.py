@@ -36,17 +36,20 @@ class Handler(object):
             body_node)
 
         # 2. 拿到输入输出
-        problem.sample_ins, problem.sample_outs = self.parser.get_sample(body_node)
+        problem.sample_ins, problem.sample_outs = self.parser.get_sample(body_node, problem.is_func_problem)
 
     def _write_config(self, file_location: str, p: Problem):
         sample_ins = p.sample_ins
         sample_outs = p.sample_outs
         sample_len = len(sample_ins)
-        print("lll", sample_ins, sample_outs)
         with open(f"{file_location}/data", "w") as f:
             for i in range(sample_len):
-                f.write(str(sample_ins[i]) + "\n")
-                f.write(str(sample_outs[i]) + "\n")
+                inputs = sample_ins[i]
+                for input in inputs:
+                    f.write(input + "\n")
+                outputs = sample_outs[i]
+                for output in outputs:
+                    f.write(output + "\n")
 
 
         info = json.dumps(dataclasses.asdict(p))
