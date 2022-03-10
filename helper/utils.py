@@ -56,3 +56,39 @@ def get_first_children(o):
         return c
     except:
         return None
+
+
+def convert_str_to_list(s: str, dep: int):
+    # 将 str 转成 list 大于 dep 的深度则不转
+    # [1, 2, 3, [4, 5]]
+    def work(s, now_dep):
+        res = []
+        now = 1
+        while now < len(s) - 1:  # 去掉 []
+            if now_dep < dep and s[now] == '[':
+                go = now
+                score = 0
+                while go < len(s) - 1:
+                    if s[go] == '[':
+                        score += 1
+                    elif s[go] == ']':
+                        score -= 1
+                    go += 1
+                    if score == 0:
+                        val = work(s[now: go], now_dep + 1)
+                        res.append(val)
+                        break
+                now = go + 2
+            else:
+                val = ""
+                go = now
+                # 应该不会有字符串里面有逗号吧？
+                while go < len(s) - 1 and s[go] != ",":
+                    val += s[go]
+                    go += 1
+                res.append(val)
+                now = go + 2  # s[go] = ','
+        print(res)
+        return res
+
+    return work(s, 0)

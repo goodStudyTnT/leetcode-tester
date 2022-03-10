@@ -1,5 +1,4 @@
-import shutil
-import os
+import argparse
 from creator import creator_factory
 from pparser import parser_factory
 import json
@@ -51,7 +50,6 @@ class Handler(object):
                 for output in outputs:
                     f.write(output + "\n")
 
-
         info = json.dumps(dataclasses.asdict(p))
         with open(f"{file_location}/problem.json", "w") as f:
             f.write(info)
@@ -87,9 +85,37 @@ class Handler(object):
         self._handle_problems(s, problems)
 
 
-if __name__ == "__main__":
-    with open('./config/weekly_contest.yaml', 'r') as f:
+
+
+def configure(argv):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--username', type=str, help='Username in leetcode-cn.com')
+    parser.add_argument('--password', type=str, help='Password in leetcode-cn.com')
+    parser.add_argument('--language', type=str, help='Programming language. Now support cpp')
+    parser.add_argument('--contest_dir', type=str, help='Generated code storage location')
+    parser.add_argument('--contest_id', type=int,
+                        help='Contest id. 0: The first upcoming games <0: Previous games >0: Specify contest id')
+    parser.add_argument('--contest_type', type=str, help='Contest type. Now support weekly')
+
+    args = parser.parse_args(argv)
+    return args
+
+
+def main(argv=None):
+    args = configure(argv)
+    with open('./config/contest.yaml', 'r') as f:
         config = yaml.load(f, yaml.FullLoader)
+        keys = config.keys()
     config = Config(**config)
+
+    for key in keys:
+        val = getattr(args, key)
+        if val:
+            setattr(config, key, val)
+    print(config)
     handler = Handler(config)
     handler.work()
+
+
+if __name__ == "__main__":
+    exit(main())

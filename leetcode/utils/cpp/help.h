@@ -189,7 +189,7 @@ void debug_out(Head H, Tail... T) {
 
 // compare_result 实现
 template <typename T>
-void compare_result(int sample_idx, T &my_ans, T &result) {
+void compare_result(int sample_idx, T my_ans, T result) {
     bool equal = (my_ans == result);
     debug(my_ans);
     debug(result);

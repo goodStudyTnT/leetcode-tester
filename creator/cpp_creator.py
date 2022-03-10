@@ -1,8 +1,12 @@
+#todo: compare_result 没有加 idx
+#todo: result 也存一下
+from collections import defaultdict
 from creator.creator import CodeCreator
 from model.problem import Function, Problem
 import os
 import shutil
 from string import Template
+from helper.utils import convert_str_to_list
 
 
 class CppCreator(CodeCreator):
@@ -162,7 +166,7 @@ class CppCreator(CodeCreator):
             pass
         return res
 
-    def create_test_code(self, dir_loc, p: Problem):
+    def _create_func_problem_test(self, dir_loc, p: Problem):
         # 输入 输出 从 data 里面读
         data_location = f"{dir_loc}/data"
         sample_ins = []
@@ -173,6 +177,7 @@ class CppCreator(CodeCreator):
 
         with open(data_location, "r") as f:
             lines = f.read().splitlines()
+            lines = [line.strip() for line in lines]
             # lines = f.readlines()
             now = 0
             while now < len(lines):
@@ -189,13 +194,12 @@ class CppCreator(CodeCreator):
                     go += 1
                 print(ins, outs)
                 if len(ins) != sample_in_len or len(outs) != sample_out_len:
-                    raise Exception("样例 data 错误，请检查！")
+                    raise Exception(f"题目 {p.id} 样例文件 data 错误，请检查！")
 
                 sample_ins.append(ins)
                 sample_outs.append(outs)
                 now = go
 
-        print("ttt", sample_ins, sample_outs)
         file_location = f"{dir_loc}/main.cpp"
         d = self._build_test(sample_ins, sample_outs, p)
 
@@ -205,3 +209,163 @@ class CppCreator(CodeCreator):
 
         with open(file_location, "w") as f:
             f.writelines(result)
+
+    def _build_method_test(self, sample_methods, sample_ins, sample_outs, p: Problem):
+        res = {}
+        test_num = len(sample_methods)
+
+        name_to_function = {}
+
+        for f in p.functions:
+            name_to_function[f.name] = f
+        begin = []
+        for idx in range(test_num):
+            methods = sample_methods[idx]
+            ins = sample_ins[idx]
+            outs = sample_outs[idx]
+            begin.append(f"void test{idx}(){{")
+            methods = convert_str_to_list(methods, 2)
+            ins = convert_str_to_list(ins, 2)
+            outs = convert_str_to_list(outs, 2)
+
+            params = set()
+            names = set()
+            name_to_val = defaultdict(list)
+
+            for idx2, method in enumerate(methods):
+                methods[idx2] = method[1:-1]  # 去掉引号
+                method = method[1:-1]
+                f = name_to_function[method]
+                input_params = f.input_params
+                for idx3, p in enumerate(input_params):
+                    if p == "":
+                        continue
+                    tmp = p.split(" ")
+                    input_type = tmp[0]
+                    input_name = tmp[1]
+
+                    key = f"{method}_{input_name}"
+
+                    if key in params:
+                        # 在里面
+                        name_to_val[key].append(ins[idx2][idx3])
+                    elif input_name in names:
+                        i = 0
+                        while f"{input_name}{i}" in names:
+                            i += 1
+                        input_name = f"{input_name}{i}"
+                        name_to_function[method].input_params[idx3] = f"{input_type} {input_name}"
+                        names.add(input_name)
+                        key = f"{method}_{input_name}"
+                        params.add(key)
+                        name_to_val[key].append(ins[idx2][idx3])
+                    else:
+                        names.add(input_name)
+                        key = f"{method}_{input_name}"
+                        params.add(key)
+                        name_to_val[key].append(ins[idx2][idx3])
+
+            for f in name_to_function.values():
+                for input_param in f.input_params:
+                    if input_param == "":
+                        continue
+                    tmp = input_param.split(" ")
+                    input_type = tmp[0]
+                    input_name = tmp[1]
+                    key = f"{f.name}_{input_name}"
+                    result_str = self._build_params(input_type, input_name, name_to_val[key])
+                    begin.append(f"\t{result_str}")
+
+            name_to_idx = defaultdict(int)
+            for idx2, method in enumerate(methods):
+                f = name_to_function[method]
+                input = []
+                for p in f.input_params:
+                    if p == "":
+                        continue
+                    tmp = p.split(" ")
+                    input_name = tmp[1]
+                    key = f"{method}_{input_name}"
+                    idx = name_to_idx[key]
+                    name_to_idx[key] += 1
+                    input.append(f"{input_name}[{idx}]")
+
+                input_str = ", ".join(input)
+                result = outs[idx2]
+                if idx2 == 0:
+                    # 构造函数
+                    begin.append(f"\t{method} *obj = new {method}({input_str});")
+                else:
+                    # 判断是否有 return
+                    have_return = (result != "null")
+                    if have_return:
+                        begin.append(f"\tcompare_result(obj->{method}({input_str}), {result});")
+                    else:
+                        begin.append(f"\tobj->{method}({input_str});")
+            begin.append("}")
+
+        begin_str = "\n".join(begin)
+
+        test = []
+        for idx in range(test_num):
+            test.append(f"test{idx}();")
+        test = [f"\t{val}" for val in test]
+        test_str = "\n".join(test)
+
+        res["begin"] = begin_str
+        res["test"] = test_str
+        return res
+
+    def _create_method_problem_test(self, dir_loc, p: Problem):
+        # 输入 输出 从 data 里面读
+        data_location = f"{dir_loc}/data"
+        sample_methods = []
+        sample_ins = []
+        sample_outs = []
+
+        with open(data_location, "r") as f:
+            lines = f.read().splitlines()
+            lines = [line.strip() for line in lines]
+            now = 0
+            while now < len(lines):
+                go = now
+                methods = None
+                ins = None
+                outs = None
+                while go < len(lines) and methods is None:
+                    if lines[go] != "\n" and lines[go] != "":
+                        methods = lines[go]
+                    go += 1
+                while go < len(lines) and ins is None:
+                    if lines[go] != "\n" and lines[go] != "":
+                        ins = lines[go]
+                    go += 1
+
+                while go < len(lines) and outs is None:
+                    if lines[go] != "\n" and lines[go] != "":
+                        outs = lines[go]
+                    go += 1
+                print(methods, ins, outs)
+                if methods is None or ins is None or outs is None:
+                    raise Exception(f"题目 {p.id} 样例文件 data 错误，请检查!")
+                sample_methods.append(methods)
+                sample_ins.append(ins)
+                sample_outs.append(outs)
+
+                now = go
+
+        file_location = f"{dir_loc}/main.cpp"
+        d = self._build_method_test(sample_methods, sample_ins, sample_outs, p)
+
+        with open("./template/cpp/method_main.cpp", "r") as f:
+            src = Template(f.read())
+            result = src.substitute(d)
+
+        with open(file_location, "w") as f:
+            f.writelines(result)
+
+    def create_test_code(self, dir_loc, p: Problem):
+        if p.is_func_problem:
+            self._create_func_problem_test(dir_loc, p)
+        else:
+            self._create_method_problem_test(dir_loc, p)
