@@ -11,19 +11,10 @@ class CppCreator(CodeCreator):
     code_type = "cpp"
 
     def create_dir(self, dir_loc):
-        try:
-            os.makedirs(dir_loc)
-        except:
-            pass
-        try:
-            os.makedirs(f"{dir_loc}/../../utils/cpp")
-        except:
-            pass
-        try:
-            if not os.path.exists(f"{dir_loc}/../../utils/cpp/help.h"):  # 当不存在时才 copy
-                shutil.copyfile(f"{self._template_dir}/help.h", f"{dir_loc}/../../utils/cpp/help.h")
-        except:
-            pass
+        os.makedirs(dir_loc, exist_ok=True)
+        os.makedirs(f"{dir_loc}/../../utils/cpp", exist_ok=True)
+        if not os.path.exists(f"{dir_loc}/../../utils/cpp/help.h"):  # 当不存在时才 copy
+            shutil.copyfile(f"{self._template_dir}/help.h", f"{dir_loc}/../../utils/cpp/help.h")
 
     def parse_code(self, code):
         lines = code.split("\n")

@@ -83,8 +83,8 @@ class Handler(object):
 
     def work(self):
         try:
-            s = login(self.config.username, self.config.password)
             self.contest_id = get_weekly_contest_id(self.config.contest_id)
+            s = login(self.config.username, self.config.password)
             problems = fetch_problem_urls(s, self.contest_id, self.config.openURL)
             self._handle_problems(s, problems)
             print(f"生成 contest {self.contest_id} 完毕！")
@@ -132,7 +132,8 @@ def main(argv=None):
                 val = getattr(args, key)
                 if val:
                     setattr(config, key, val)
-
+        if config.contest_dir is None:
+            raise Exception("生成代码路径未填！")
         handler = Handler(config)
         handler.work()
     else:
