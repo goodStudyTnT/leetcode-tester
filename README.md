@@ -22,13 +22,13 @@ git clone git@github.com:goodStudyTnT/leetcode-tester.git
 cd leetcode-tester
 ```
 
-1. 下载依赖包
+2. 下载依赖包
 
 ```bash
 pip install -r requirements
 ```
 
-1. 填写配置，配置路径为 ‘config/config.yaml’ 
+3. 填写配置，配置路径为 ‘config/config.yaml’ 
 
 ```yaml
 username:                                     # leetcode-cn.com 用户名
@@ -47,7 +47,7 @@ contest_type: weekly # 0                      # 比赛类型, 当前支持周赛
 python main.py get --contest_id 223
 ```
 
-1. 运行命令，生成测试代码
+4. 运行命令，生成测试代码
 
 ```bash
 python main.py get [-h] [--username USERNAME] [--password PASSWORD]
@@ -73,11 +73,11 @@ python main.py get --contest_id 185 --language cpp
 
     ![Untitled _2_.png](https://s2.loli.net/2022/03/12/vUxrSyqQt7YwFW5.png)
     
-1. 在 `solution.h` 中编写代码，编写完毕后，运行 `main.cpp` 得到结果。
+5. 在 `solution.h` 中编写代码，编写完毕后，运行 `main.cpp` 得到结果。
 
     ![Untitled _3_.png](https://s2.loli.net/2022/03/12/cFw6GQevxDy8H7z.png)
     
-2. 提交代码，如果 wrong answer 后，拿到错误样例，可以将错误样例贴到题目测试代码所在文件夹中的 data 里面。**注意：贴入顺序为样例的输入输出。**
+6. 提交代码，如果 wrong answer 后，拿到错误样例，可以将错误样例贴到题目测试代码所在文件夹中的 data 里面。**注意：贴入顺序为样例的输入输出。**
 
     ![Untitled _4_.png](https://s2.loli.net/2022/03/12/QFTJkyjEY6lLGDN.png)
     
