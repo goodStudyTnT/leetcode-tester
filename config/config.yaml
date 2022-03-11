@@ -1,0 +1,9 @@
+username:                                     # leetcode-cn.com 用户名
+password:                                     # 密码
+language: cpp                                 # 所用语言，当前支持 cpp
+openURL: True                                 # 是否自动打开页面
+
+contest_dir: D:/code/ACM/leetcode/weekly      # 生成代码文件夹
+contest_id: -1 # 0                            #比赛 id，大于 0 表示指定比赛 id，等于 0 表示即将到来的比赛，小于 0 表示过去的前 x 场比赛
+contest_type: weekly # 0                      # 比赛类型, 当前支持周赛 weekly
+

@@ -119,7 +119,7 @@ def main(argv=None):
     location = os.path.dirname(location)
     args = configure(argv)
     if args.command == "get":
-        contest_yaml = os.path.join(location, "config", "contest.yaml")
+        contest_yaml = os.path.join(location, "config", "config.yaml")
         with open(contest_yaml, 'r') as f:
             config = yaml.load(f, yaml.FullLoader)
             keys = config.keys()
