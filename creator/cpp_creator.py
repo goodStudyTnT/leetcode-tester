@@ -1,5 +1,5 @@
-#todo: compare_result 没有加 idx
-#todo: result 也存一下
+# todo: compare_result 没有加 idx
+# todo: result 也存一下
 from collections import defaultdict
 from creator.creator import CodeCreator
 from model.problem import Function, Problem
@@ -13,7 +13,6 @@ class CppCreator(CodeCreator):
     code_type = "cpp"
 
     def create_dir(self, dir_loc):
-        print(dir_loc)
         try:
             os.makedirs(dir_loc)
         except:
@@ -40,8 +39,8 @@ class CppCreator(CodeCreator):
         functions = list()
         is_func_problem = True
         for lo, line in enumerate(lines):
-            if "{" in line and "struct" not in line and "class" not in line and \
-                    line[1] != "*":
+            line = line.strip()
+            if "{" in line and not line.startswith("struct") and not line.startswith("class") and not line.startswith("/*") and not line.startswith("//"):
                 f = Function()
                 i = line.find("(")
                 left = line[:i]
@@ -155,7 +154,7 @@ class CppCreator(CodeCreator):
             input_names_str = ", ".join(input_names)
             test.append(
                 f"{f.output_params} my_ans = sol.{f.name}({input_names_str});")
-            test.append(f"compare_result(i, my_ans, res[i]);")
+            test.append(f'compare_result(to_string(i), my_ans, res[i]);')
             begin = [f"\t{val}" for val in begin]
             begin_str = "\n".join(begin)
             test = [f"\t\t{val}" for val in test]
@@ -234,7 +233,7 @@ class CppCreator(CodeCreator):
 
             for idx2, method in enumerate(methods):
                 methods[idx2] = method[1:-1]  # 去掉引号
-                method = method[1:-1]
+                method = methods[idx2]
                 f = name_to_function[method]
                 input_params = f.input_params
                 for idx3, p in enumerate(input_params):
@@ -277,6 +276,7 @@ class CppCreator(CodeCreator):
                     begin.append(f"\t{result_str}")
 
             name_to_idx = defaultdict(int)
+            return_num = 0
             for idx2, method in enumerate(methods):
                 f = name_to_function[method]
                 input = []
@@ -286,9 +286,9 @@ class CppCreator(CodeCreator):
                     tmp = p.split(" ")
                     input_name = tmp[1]
                     key = f"{method}_{input_name}"
-                    idx = name_to_idx[key]
+                    the_idx = name_to_idx[key]
                     name_to_idx[key] += 1
-                    input.append(f"{input_name}[{idx}]")
+                    input.append(f"{input_name}[{the_idx}]")
 
                 input_str = ", ".join(input)
                 result = outs[idx2]
@@ -299,7 +299,12 @@ class CppCreator(CodeCreator):
                     # 判断是否有 return
                     have_return = (result != "null")
                     if have_return:
-                        begin.append(f"\tcompare_result(obj->{method}({input_str}), {result});")
+                        output_type = f.output_params
+
+                        begin.append(f"\t{output_type} res{return_num} = obj->{method}({input_str});")
+                        begin.append(f"\t{output_type} ans{return_num} = {result};")
+                        begin.append(f"\tcompare_result(\"{idx}-{return_num}\", res{return_num}, ans{return_num});")
+                        return_num += 1
                     else:
                         begin.append(f"\tobj->{method}({input_str});")
             begin.append("}")
@@ -345,7 +350,6 @@ class CppCreator(CodeCreator):
                     if lines[go] != "\n" and lines[go] != "":
                         outs = lines[go]
                     go += 1
-                print(methods, ins, outs)
                 if methods is None or ins is None or outs is None:
                     raise Exception(f"题目 {p.id} 样例文件 data 错误，请检查!")
                 sample_methods.append(methods)

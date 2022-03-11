@@ -189,7 +189,7 @@ void debug_out(Head H, Tail... T) {
 
 // compare_result 实现
 template <typename T>
-void compare_result(int sample_idx, T &my_ans, T &result) {
+void compare_result(string sample_idx, T &my_ans, T &result) {
     bool equal = (my_ans == result);
     debug(my_ans);
     debug(result);
@@ -200,13 +200,13 @@ void compare_result(int sample_idx, T &my_ans, T &result) {
     }
 }
 
-void compare_result(int sample_idx, TreeNode *my_ans, TreeNode *result) {
+void compare_result(string sample_idx, TreeNode *my_ans, TreeNode *result) {
     vector<int> a = my_ans->bfs_order();
     vector<int> b = result->bfs_order();
     compare_result(sample_idx, a, b);
 };
 
-void compare_result(int sample_idx, ListNode *my_ans, ListNode *result) {
+void compare_result(string sample_idx, ListNode *my_ans, ListNode *result) {
     vector<int> a = my_ans->to_vector();
     vector<int> b = result->to_vector();
     compare_result(sample_idx, a, b);

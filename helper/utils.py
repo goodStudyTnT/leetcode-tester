@@ -78,7 +78,9 @@ def convert_str_to_list(s: str, dep: int):
                         val = work(s[now: go], now_dep + 1)
                         res.append(val)
                         break
-                now = go + 2
+                now = go + 1 # 逗号
+                if now < len(s) - 1 and s[now] == " ":
+                    now += 1
             else:
                 val = ""
                 go = now
@@ -87,7 +89,9 @@ def convert_str_to_list(s: str, dep: int):
                     val += s[go]
                     go += 1
                 res.append(val)
-                now = go + 2  # s[go] = ','
+                now = go + 1  # s[go] = ','
+                if now < len(s) - 1 and s[now] == " ":
+                    now += 1
         print(res)
         return res
 

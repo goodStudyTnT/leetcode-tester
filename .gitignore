@@ -5,3 +5,4 @@ a
 b
 .vscode
 *.exe
+/leetcode

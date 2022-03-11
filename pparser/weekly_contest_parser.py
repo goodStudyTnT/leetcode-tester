@@ -9,7 +9,6 @@ from model.problem import CodeDefinition
 
 
 class WeeklyContestParser(Parser):
-
     contest_type = "weekly"
 
     def get_basic_info(self, node: Tag) -> (str, str, bool, List[Function]):
@@ -45,7 +44,6 @@ class WeeklyContestParser(Parser):
 
         return default_code, class_name, is_func_problem, functions
 
-
     def get_sample(self, node: Tag, is_func_problem: bool) -> (List[List[str]], List[List[str]]):
         # 提取并解析每个 <pre> 块内的文本（以中文为基准解析）
         # 需要判断 <pre> 的下一个子元素是否为 tag
@@ -61,36 +59,38 @@ class WeeklyContestParser(Parser):
         def work(o):
             first_child = get_first_children(o)
             if o.name == "pre" and first_child:
-                if first_child.name != "img" and first_child.name != "image":
-                    data = first_child.string
-                    data = data.strip()
-                    if data.startswith("输"):  # 输入(极少情况下会错误地写成输出)
-                        raw_data = []
+                str_o = str(o)
+                if "输入" in str_o and "输出" in str_o:
+                    raw_data = []
 
-                        def parse_pre_node(o: Tag):
-                            if o.name is None:
-                                raw_data.append(str(o.string))
-                            c = get_first_children(o)
-                            while c is not None:
+                    def parse_pre_node(o: Tag):
+                        try:
+                            children_iter = o.children
+                            c = next(children_iter)
+                            while True:
+                                if c.name is None and c.string is not None:
+                                    raw_data.append(str(c.string))
                                 parse_pre_node(c)
-                                c = c.next_sibling
+                                c = next(children_iter)
+                        except:
+                            pass
 
-                        parse_pre_node(o)
-                        raw_data = "".join(raw_data)
+                    parse_pre_node(o)
+                    raw_data = "".join(raw_data)
 
-                        i = raw_data.find("解")
-                        if i >= 0:
-                            raw_data = raw_data[:i]
-                        i = raw_data.find("提")
-                        if i >= 0:
-                            raw_data = raw_data[:i]
-                        raw_data = raw_data.strip()
-                        raw_data = raw_data[3:]  # 去掉 输入：
-                        i = raw_data.find("输")
-                        sample_ins.append(self.parse_sample_text(raw_data[:i], True, is_func_problem))
+                    i = raw_data.find("解")
+                    if i >= 0:
+                        raw_data = raw_data[:i]
+                    i = raw_data.find("提")
+                    if i >= 0:
+                        raw_data = raw_data[:i]
+                    raw_data = raw_data.strip()
+                    raw_data = raw_data[3:]  # 去掉 输入：
+                    i = raw_data.find("输")
+                    sample_ins.append(self.parse_sample_text(raw_data[:i], True, is_func_problem))
 
-                        raw_data = raw_data[i + 3:]  # 去掉 输出：
-                        sample_outs.append(self.parse_sample_text(raw_data, True, is_func_problem))
+                    raw_data = raw_data[i + 3:]  # 去掉 输出：
+                    sample_outs.append(self.parse_sample_text(raw_data, True, is_func_problem))
 
             c = get_first_children(o)
             while c is not None:

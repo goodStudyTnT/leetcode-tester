@@ -50,7 +50,7 @@ class Handler(object):
                 for output in outputs:
                     f.write(output + "\n")
 
-        info = json.dumps(dataclasses.asdict(p))
+        info = json.dumps(dataclasses.asdict(p), indent=4, sort_keys=True)
         with open(f"{file_location}/problem.json", "w") as f:
             f.write(info)
 
@@ -112,9 +112,17 @@ def main(argv=None):
         val = getattr(args, key)
         if val:
             setattr(config, key, val)
-    print(config)
     handler = Handler(config)
     handler.work()
+
+    # i = -1
+    # while i > -50:
+    #     config.contest_id = i
+    #     handler = Handler(config)
+    #     handler.work()
+    #     i -= 1
+
+
 
 
 if __name__ == "__main__":
