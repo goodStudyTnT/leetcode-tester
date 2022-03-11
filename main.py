@@ -1,6 +1,7 @@
 import argparse
 from creator import creator_factory
-from pparser import parser_factory
+from parsers import parser_factory
+from dacite import from_dict
 import json
 import dataclasses
 import threading
@@ -20,7 +21,7 @@ class Handler(object):
     def __init__(self, config: Config):
         # load config
         self.config = config
-        self.creator = creator_factory[self.config.language]()
+        self.creator = creator_factory[self.config.language](f"{self.config.current_dir}/template/cpp")
         self.parser = parser_factory[self.config.contest_type](self.creator)
 
     def _parseHTML(self, session: Session, problem: Problem):
@@ -29,6 +30,8 @@ class Handler(object):
             raise Exception(f"GET {problem.url} return code {resp.status_code}")
         soup = BeautifulSoup(resp.content, "html5lib")
         body_node = soup.body
+
+        problem.language = self.config.language
 
         # 1. 拿到问题基本属性
         problem.default_code, problem.class_name, problem.is_func_problem, problem.functions = self.parser.get_basic_info(
@@ -79,49 +82,73 @@ class Handler(object):
             t.start()
 
     def work(self):
-        s = login(self.config.username, self.config.password)
-        self.contest_id = get_weekly_contest_id(self.config.contest_id)
-        problems = fetch_problem_urls(s, self.contest_id)
-        self._handle_problems(s, problems)
-
-
+        try:
+            s = login(self.config.username, self.config.password)
+            self.contest_id = get_weekly_contest_id(self.config.contest_id)
+            problems = fetch_problem_urls(s, self.contest_id, self.config.openURL)
+            self._handle_problems(s, problems)
+            print(f"生成 contest {self.contest_id} 完毕！")
+        except Exception as e:
+            print(f"生成 contest {self.contest_id} 失败，错误原因：{str(e)}")
 
 
 def configure(argv):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--username', type=str, help='Username in leetcode-cn.com')
-    parser.add_argument('--password', type=str, help='Password in leetcode-cn.com')
-    parser.add_argument('--language', type=str, help='Programming language. Now support cpp')
-    parser.add_argument('--contest_dir', type=str, help='Generated code storage location')
-    parser.add_argument('--contest_id', type=int,
+
+    subparsers = parser.add_subparsers(dest="command")
+
+    parser_get = subparsers.add_parser("get", help="Download contest problems and generate testing code")
+    parser_get.add_argument('--username', type=str, help='Username in leetcode-cn.com')
+    parser_get.add_argument('--password', type=str, help='Password in leetcode-cn.com')
+    parser_get.add_argument('--language', type=str, help='Programming language. Now support cpp')
+    parser_get.add_argument('--contest_dir', type=str, help='Generated code storage location')
+    parser_get.add_argument('--contest_id', type=int,
                         help='Contest id. 0: The first upcoming games <0: Previous games >0: Specify contest id')
-    parser.add_argument('--contest_type', type=str, help='Contest type. Now support weekly')
+    parser_get.add_argument('--contest_type', type=str, help='Contest type. Now support weekly')
+    parser_get.add_argument('--openURL', type=bool, help='Whether open problem page in browser')
+
+    parser_build = subparsers.add_parser("build_test", help="Build new test based on data file")
 
     args = parser.parse_args(argv)
     return args
 
 
 def main(argv=None):
+    import os
+    location = os.path.abspath(__file__)
+    location = os.path.dirname(location)
     args = configure(argv)
-    with open('./config/contest.yaml', 'r') as f:
-        config = yaml.load(f, yaml.FullLoader)
-        keys = config.keys()
-    config = Config(**config)
+    if args.command == "get":
+        contest_yaml = os.path.join(location, "config", "contest.yaml")
+        with open(contest_yaml, 'r') as f:
+            config = yaml.load(f, yaml.FullLoader)
+            keys = config.keys()
+        config["current_dir"] = location
+        config = Config(**config)
+        print(config)
 
-    for key in keys:
-        val = getattr(args, key)
-        if val:
-            setattr(config, key, val)
-    handler = Handler(config)
-    handler.work()
+        for key in keys:
+            if hasattr(args, key):
+                val = getattr(args, key)
+                if val:
+                    setattr(config, key, val)
 
-    # i = -1
-    # while i > -50:
-    #     config.contest_id = i
-    #     handler = Handler(config)
-    #     handler.work()
-    #     i -= 1
-
+        handler = Handler(config)
+        handler.work()
+    else:
+        current_dir = os.getcwd()
+        tmp = os.path.join(current_dir, "problem.json")
+        if os.path.exists(tmp):
+            with open(tmp, "r") as f:
+                p = json.load(f)
+                p = from_dict(Problem, p)
+            language = p.language
+            template_loc = os.path.join(location, "template", language)
+            creator = creator_factory[language](template_loc)
+            creator.create_test_code(f'{current_dir}/', p)
+            print("done!")
+        else:
+            raise Exception("请在题目路径下执行此命令！")
 
 
 

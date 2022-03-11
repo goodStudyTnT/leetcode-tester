@@ -3,6 +3,9 @@ class CodeCreator(object):
 
     code_type = ""
 
+    def __init__(self, template_dir):
+        self._template_dir = template_dir
+
     def create_dir(self, dir_loc):
         """
         :param dir_loc:

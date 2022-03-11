@@ -1,4 +1,4 @@
-from pparser.parser import Parser
+from parsers.parser import Parser
 from typing import List
 from model.problem import Function
 from bs4 import Tag, NavigableString

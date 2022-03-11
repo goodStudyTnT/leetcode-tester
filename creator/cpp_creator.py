@@ -1,5 +1,3 @@
-# todo: compare_result 没有加 idx
-# todo: result 也存一下
 from collections import defaultdict
 from creator.creator import CodeCreator
 from model.problem import Function, Problem
@@ -23,7 +21,7 @@ class CppCreator(CodeCreator):
             pass
         try:
             if not os.path.exists(f"{dir_loc}/../../utils/cpp/help.h"):  # 当不存在时才 copy
-                shutil.copyfile("./template/cpp/help.h", f"{dir_loc}/../../utils/cpp/help.h")
+                shutil.copyfile(f"{self._template_dir}/help.h", f"{dir_loc}/../../utils/cpp/help.h")
         except:
             pass
 
@@ -40,7 +38,7 @@ class CppCreator(CodeCreator):
         is_func_problem = True
         for lo, line in enumerate(lines):
             line = line.strip()
-            if "{" in line and not line.startswith("struct") and not line.startswith("class") and not line.startswith("/*") and not line.startswith("//"):
+            if "{" in line and not line.startswith("struct") and not line.startswith("class") and not line.startswith("/*") and not line.startswith("//") and not line.startswith("*"):
                 f = Function()
                 i = line.find("(")
                 left = line[:i]
@@ -69,7 +67,7 @@ class CppCreator(CodeCreator):
             "problem": code,
         }
 
-        with open("./template/cpp/solve.h", "r") as f:
+        with open(f"{self._template_dir}/solve.h", "r") as f:
             src = Template(f.read())
             result = src.substitute(d)
 
@@ -155,9 +153,9 @@ class CppCreator(CodeCreator):
             test.append(
                 f"{f.output_params} my_ans = sol.{f.name}({input_names_str});")
             test.append(f'compare_result(to_string(i), my_ans, res[i]);')
-            begin = [f"\t{val}" for val in begin]
+            begin = [f"    {val}" for val in begin]
             begin_str = "\n".join(begin)
-            test = [f"\t\t{val}" for val in test]
+            test = [f"        {val}" for val in test]
             test_str = "\n".join(test)
             res["begin"] = begin_str
             res["test"] = test_str
@@ -191,9 +189,8 @@ class CppCreator(CodeCreator):
                     if lines[go] != '\n' and lines[go] != "":
                         outs.append(lines[go])
                     go += 1
-                print(ins, outs)
                 if len(ins) != sample_in_len or len(outs) != sample_out_len:
-                    raise Exception(f"题目 {p.id} 样例文件 data 错误，请检查！")
+                    raise Exception(f" 题目 {p.id} 样例文件 data 错误，请检查! ins={ins} outs={outs}")
 
                 sample_ins.append(ins)
                 sample_outs.append(outs)
@@ -202,7 +199,7 @@ class CppCreator(CodeCreator):
         file_location = f"{dir_loc}/main.cpp"
         d = self._build_test(sample_ins, sample_outs, p)
 
-        with open("./template/cpp/main.cpp", "r") as f:
+        with open(f"{self._template_dir}/main.cpp", "r") as f:
             src = Template(f.read())
             result = src.substitute(d)
 
@@ -273,7 +270,7 @@ class CppCreator(CodeCreator):
                     input_name = tmp[1]
                     key = f"{f.name}_{input_name}"
                     result_str = self._build_params(input_type, input_name, name_to_val[key])
-                    begin.append(f"\t{result_str}")
+                    begin.append(f"    {result_str}")
 
             name_to_idx = defaultdict(int)
             return_num = 0
@@ -294,19 +291,19 @@ class CppCreator(CodeCreator):
                 result = outs[idx2]
                 if idx2 == 0:
                     # 构造函数
-                    begin.append(f"\t{method} *obj = new {method}({input_str});")
+                    begin.append(f"    {method} *obj = new {method}({input_str});")
                 else:
                     # 判断是否有 return
                     have_return = (result != "null")
                     if have_return:
                         output_type = f.output_params
 
-                        begin.append(f"\t{output_type} res{return_num} = obj->{method}({input_str});")
-                        begin.append(f"\t{output_type} ans{return_num} = {result};")
-                        begin.append(f"\tcompare_result(\"{idx}-{return_num}\", res{return_num}, ans{return_num});")
+                        begin.append(f"    {output_type} res{return_num} = obj->{method}({input_str});")
+                        begin.append(f"    {output_type} ans{return_num} = {result};")
+                        begin.append(f"    compare_result(\"{idx}-{return_num}\", res{return_num}, ans{return_num});")
                         return_num += 1
                     else:
-                        begin.append(f"\tobj->{method}({input_str});")
+                        begin.append(f"    obj->{method}({input_str});")
             begin.append("}")
 
         begin_str = "\n".join(begin)
@@ -314,7 +311,7 @@ class CppCreator(CodeCreator):
         test = []
         for idx in range(test_num):
             test.append(f"test{idx}();")
-        test = [f"\t{val}" for val in test]
+        test = [f"    {val}" for val in test]
         test_str = "\n".join(test)
 
         res["begin"] = begin_str
@@ -361,7 +358,7 @@ class CppCreator(CodeCreator):
         file_location = f"{dir_loc}/main.cpp"
         d = self._build_method_test(sample_methods, sample_ins, sample_outs, p)
 
-        with open("./template/cpp/method_main.cpp", "r") as f:
+        with open(f"{self._template_dir}/method_main.cpp", "r") as f:
             src = Template(f.read())
             result = src.substitute(d)
 

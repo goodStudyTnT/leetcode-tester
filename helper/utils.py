@@ -92,7 +92,6 @@ def convert_str_to_list(s: str, dep: int):
                 now = go + 1  # s[go] = ','
                 if now < len(s) - 1 and s[now] == " ":
                     now += 1
-        print(res)
         return res
 
     return work(s, 0)

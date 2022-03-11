@@ -25,6 +25,8 @@ class Problem(object):
     openURL: bool = False
 
     default_code: str = ""
+    language: str = ""
+
     is_func_problem: bool = True
     class_name: str = ""
     functions: List[Function] = field(default_factory=lambda: [])

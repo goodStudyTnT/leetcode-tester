@@ -1,8 +1,10 @@
-username: goodstudyqaq
-password: woshiGS#3#
+username:
+password:
 language: cpp
+openURL: True
 
-contest_dir: ./leetcode
-contest_id: 273 # 0
+contest_dir: D:/code/ACM/leetcode/weekly
+contest_id: -1 # 0
 contest_type: weekly # 0
+
 
