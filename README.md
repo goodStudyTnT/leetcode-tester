@@ -31,14 +31,27 @@ pip install -r requirements
 3. 填写配置，配置路径为 ‘config/config.yaml’ 
 
 ```yaml
-username:                                     # leetcode-cn.com 用户名
-password:                                     # 密码
-language: cpp                                 # 所用语言，当前支持 cpp
-openURL: True                                 # 是否自动打开页面
+# leetcode-cn.com 用户名
+username:
 
-contest_dir:                                  # 生成代码文件夹
-contest_id: -1 # 0                            #比赛 id，大于 0 表示指定比赛 id，等于 0 表示即将到来的比赛，小于 0 表示过去的前 x 场比赛
-contest_type: weekly # 0                      # 比赛类型, 当前支持周赛 weekly
+# 密码
+password:
+
+# 所用语言，当前支持 cpp
+language: cpp
+
+# 是否自动打开页面
+openURL: True
+
+# 生成代码文件夹
+contest_dir:
+
+#比赛 id，大于 0 表示指定比赛 id，等于 0 表示即将到来的比赛，小于 0 表示过去的前 x 场比赛
+contest_id: -1
+
+# 比赛类型, 当前支持周赛 weekly
+contest_type: weekly # 0
+
 ```
 
 当然你也可以在运行在命令行覆盖配置文件中的配置，如：
