@@ -65,23 +65,17 @@ python main.py get --contest_id 185 --language cpp
 运行完毕后，会在指定目录下生成两个文件夹。
 
 - `185`: contest 185 的所有测试代码。**注意：请勿改动 `problem.json` 中的内容**
-    
-    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f0ebee9a-b43e-4e11-a0d9-d3aee638a1f3/Untitled.png)
+    ![Untitled.png](https://s2.loli.net/2022/03/12/DYcdNZg32sj7WSi.png)
     
 
 - `utils`: 测试依赖的一些代码。**注意：本文件夹只会生成一次，即第一次生成后之后就不会再改里面的内容了，所以用户可以在里面添加一些自己的测试函数或模板，比如 TreeNode 的按层遍历等等。**
-    
-    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0bdcb546-e080-48d6-bad5-c5ff6b4a391c/Untitled.png)
-    
-    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/dc32bc0a-872a-444a-ad85-72dee25783c0/Untitled.png)
+    ![Untitled _2_.png](https://s2.loli.net/2022/03/12/vUxrSyqQt7YwFW5.png)
     
 1. 在 `solution.h` 中编写代码，编写完毕后，运行 `main.cpp` 得到结果。
-    
-    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5d5643e0-6ede-4e3d-bcd6-21ce7ffdc4b1/Untitled.png)
+    ![Untitled _3_.png](https://s2.loli.net/2022/03/12/cFw6GQevxDy8H7z.png)
     
 2. 提交代码，如果 wrong answer 后，拿到错误样例，可以将错误样例贴到题目测试代码所在文件夹中的 data 里面。**注意：贴入顺序为样例的输入输出。**
-    
-    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c0b6705a-c24d-41b1-ae85-0c7724c95a26/Untitled.png)
+    ![Untitled _4_.png](https://s2.loli.net/2022/03/12/QFTJkyjEY6lLGDN.png)
     
     修改完 data 后，需要重新生成 `main.cpp`，执行命令.
     
