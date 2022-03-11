@@ -87,7 +87,7 @@ python main.py get --contest_id 185 --language cpp
     python main.py build_test
     ```
     
-    **注意：命令路径一定要在题目测试代码路径下。**执行完毕后，即可运行 main 函数进行测试。
+   **注意：命令路径一定要在题目测试代码路径下。** 执行完毕后，即可运行 main 函数进行测试。
     
 # 免责声明
     
