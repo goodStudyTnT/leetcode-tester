@@ -13,7 +13,7 @@ Leetcode 的输入设计和 TopCoder 的十分类似，熟悉 TopCoder 的用户
 
 ### 环境要求：
 
-- python3
+- python3.7(开发环境为 python3.7, 不保证该插件在其他环境是否有问题)
 
 1. 克隆仓库
 
