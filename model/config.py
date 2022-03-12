@@ -14,3 +14,5 @@ class Config(object):
     contest_type: str
 
     current_dir: str
+
+    custom_comment: str

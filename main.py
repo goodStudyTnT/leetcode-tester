@@ -63,7 +63,7 @@ class Handler(object):
         directory_location = f"{self.config.contest_dir}/{self.contest_id}/{p.id}/"
         self.creator.create_dir(directory_location)
         self._write_config(directory_location, p)
-        self.creator.create_main_code(directory_location, p.default_code)
+        self.creator.create_main_code(directory_location, p.default_code, self.config.custom_comment)
         self.creator.create_test_code(directory_location, p)  # 需要传一个路径进去
 
     def _open_problems_page(self, problems: List[Problem]):
@@ -106,6 +106,7 @@ def configure(argv):
                         help='Contest id. 0: The first upcoming games <0: Previous games >0: Specify contest id')
     parser_get.add_argument('--contest_type', type=str, help='Contest type. Now support weekly')
     parser_get.add_argument('--openURL', type=bool, help='Whether open problem page in browser')
+    parser_get.add_argument('--custom_comment', type=str, help='Custom comment in code')
 
     parser_build = subparsers.add_parser("build_test", help="Build new test based on data file")
 

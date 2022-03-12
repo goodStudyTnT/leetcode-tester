@@ -51,10 +51,10 @@ class CppCreator(CodeCreator):
                 functions.append(f)
         return class_name, is_func_problem, functions
 
-    def create_main_code(self, dir_loc, code):
+    def create_main_code(self, dir_loc, code, custom_comment):
         file_location = f"{dir_loc}/solution.h"
         d = {
-            "custom_comment": "test",
+            "custom_comment": custom_comment,
             "problem": code,
         }
 

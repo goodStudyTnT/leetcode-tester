@@ -18,7 +18,7 @@ class CodeCreator(object):
         :return:
         """
 
-    def create_main_code(self, dir_loc, code):
+    def create_main_code(self, dir_loc, code, custom_comment):
         """
         :param dir_loc:
         :param code:
