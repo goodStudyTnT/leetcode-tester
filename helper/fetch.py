@@ -54,8 +54,7 @@ def login(username, password):
     return s
 
 
-def fetch_problem_urls(session: Session, contest_id, openURL):
-    contest_tag = get_weekly_contest_tag(contest_id)
+def fetch_problem_urls(session: Session, contest_tag, openURL):
     contest_info_url = f"https://{host}/contest/api/info/{contest_tag}"
     resp = session.get(contest_info_url)
     if not resp.ok:
@@ -77,7 +76,7 @@ def fetch_problem_urls(session: Session, contest_id, openURL):
         sleep_time += 2
         print(f"{d.contest.title} 尚未开始，请等待 {sleep_time} 秒...")
         time.sleep(sleep_time)
-        return fetch_problem_urls(session, contest_tag)
+        return fetch_problem_urls(session, contest_tag, openURL)
 
     if len(d.questions) == 0:
         raise Exception(f"题目链接为空 {contest_tag}")

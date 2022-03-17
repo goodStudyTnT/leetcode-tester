@@ -7,7 +7,7 @@ import dataclasses
 import threading
 from requests import Session
 from helper.utils import open_page, \
-    get_weekly_contest_id
+    get_weekly_contest_id, get_biweekly_contest_id, get_biweekly_contest_tag, get_weekly_contest_tag
 from model.problem import Problem
 from model.config import Config
 from typing import List
@@ -83,9 +83,14 @@ class Handler(object):
 
     def work(self):
         try:
-            self.contest_id = get_weekly_contest_id(self.config.contest_id)
+            if self.config.contest_type == "weekly":
+                self.contest_id = get_weekly_contest_id(self.config.contest_id)
+                self.contest_tag = get_weekly_contest_tag(self.contest_id)
+            else:
+                self.contest_id = get_biweekly_contest_id(self.config.contest_id)
+                self.contest_tag = get_biweekly_contest_tag(self.contest_id)
             s = login(self.config.username, self.config.password)
-            problems = fetch_problem_urls(s, self.contest_id, self.config.openURL)
+            problems = fetch_problem_urls(s, self.contest_tag, self.config.openURL)
             self._handle_problems(s, problems)
             print(f"生成 contest {self.contest_id} 完毕！")
         except Exception as e:
