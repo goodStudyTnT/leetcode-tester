@@ -58,11 +58,11 @@ class CppCreator(CodeCreator):
             "problem": code,
         }
 
-        with open(f"{self._template_dir}/solve.h", "r") as f:
+        with open(f"{self._template_dir}/solve.h", "r", encoding="utf-8") as f:
             src = Template(f.read())
             result = src.substitute(d)
 
-        with open(file_location, "w") as f:
+        with open(file_location, "w", encoding="utf-8") as f:
             f.writelines(result)
 
     def _convert_input_for_cpp(self, input_type, input):
@@ -163,7 +163,7 @@ class CppCreator(CodeCreator):
         sample_in_len = len(p.functions[0].input_params)
         sample_out_len = 1
 
-        with open(data_location, "r") as f:
+        with open(data_location, "r", encoding="utf-8") as f:
             lines = f.read().splitlines()
             lines = [line.strip() for line in lines]
             # lines = f.readlines()
@@ -190,11 +190,11 @@ class CppCreator(CodeCreator):
         file_location = f"{dir_loc}/main.cpp"
         d = self._build_test(sample_ins, sample_outs, p)
 
-        with open(f"{self._template_dir}/main.cpp", "r") as f:
+        with open(f"{self._template_dir}/main.cpp", "r", encoding="utf-8") as f:
             src = Template(f.read())
             result = src.substitute(d)
 
-        with open(file_location, "w") as f:
+        with open(file_location, "w", encoding="utf-8") as f:
             f.writelines(result)
 
     def _build_method_test(self, sample_methods, sample_ins, sample_outs, p: Problem):
@@ -316,7 +316,7 @@ class CppCreator(CodeCreator):
         sample_ins = []
         sample_outs = []
 
-        with open(data_location, "r") as f:
+        with open(data_location, "r", encoding="utf-8") as f:
             lines = f.read().splitlines()
             lines = [line.strip() for line in lines]
             now = 0
@@ -349,11 +349,11 @@ class CppCreator(CodeCreator):
         file_location = f"{dir_loc}/main.cpp"
         d = self._build_method_test(sample_methods, sample_ins, sample_outs, p)
 
-        with open(f"{self._template_dir}/method_main.cpp", "r") as f:
+        with open(f"{self._template_dir}/method_main.cpp", "r", encoding="utf-8") as f:
             src = Template(f.read())
             result = src.substitute(d)
 
-        with open(file_location, "w") as f:
+        with open(file_location, "w", encoding="utf-8") as f:
             f.writelines(result)
 
     def create_test_code(self, dir_loc, p: Problem):

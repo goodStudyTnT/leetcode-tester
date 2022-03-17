@@ -44,7 +44,7 @@ class Handler(object):
         sample_ins = p.sample_ins
         sample_outs = p.sample_outs
         sample_len = len(sample_ins)
-        with open(f"{file_location}/data", "w") as f:
+        with open(f"{file_location}/data", "w", encoding="utf-8") as f:
             for i in range(sample_len):
                 inputs = sample_ins[i]
                 for input in inputs:
@@ -54,7 +54,7 @@ class Handler(object):
                     f.write(output + "\n")
 
         info = json.dumps(dataclasses.asdict(p), indent=4, sort_keys=True)
-        with open(f"{file_location}/problem.json", "w") as f:
+        with open(f"{file_location}/problem.json", "w", encoding="utf-8") as f:
             f.write(info)
 
     def _handle_one_problem(self, s: Session, p: Problem):
@@ -121,7 +121,7 @@ def main(argv=None):
     args = configure(argv)
     if args.command == "get":
         contest_yaml = os.path.join(location, "config", "config.yaml")
-        with open(contest_yaml, 'r') as f:
+        with open(contest_yaml, 'r', encoding="utf-8") as f:
             config = yaml.load(f, yaml.FullLoader)
             keys = config.keys()
         config["current_dir"] = location
@@ -141,7 +141,7 @@ def main(argv=None):
         current_dir = os.getcwd()
         tmp = os.path.join(current_dir, "problem.json")
         if os.path.exists(tmp):
-            with open(tmp, "r") as f:
+            with open(tmp, "r", encoding="utf-8") as f:
                 p = json.load(f)
                 p = from_dict(Problem, p)
             language = p.language
